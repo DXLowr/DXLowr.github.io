@@ -304,7 +304,7 @@
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    我们不要一个被科学游戏污染的天空<br>我们不要一个被现实生活超越的时空
+                    死にたかった 死ななくてよかった
                 </p>
             </div>
             </aside>
@@ -329,36 +329,41 @@
         }
         
         // ----------------------------------------------------
-        // 【新增函数】动态更新导航栏的 active 状态
+        // 【最终修正函数】动态更新导航栏的 active 状态
         // ----------------------------------------------------
         function updateNavClasses() {
-            // 1. 获取当前 URL 路径，并清理掉 index.html 和末尾斜杠，方便比较
+            // 1. 获取当前 URL 路径，并清理掉 index.html 和末尾斜杠
+            // 例如：/ 或 /categories/Criticism 或 /2024/01/01/post-title
             const currentPath = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
 
-            // 2. 清除所有链接的 active 状态
+            // 2. 清除所有链接的 active 状态 (必须先清除)
             document.querySelectorAll('.nav-links-wrapper .nav-item').forEach(link => {
                 link.classList.remove('active');
             });
 
             // 3. 确定应该激活哪个链接的 href
-            let activeHref = '/'; // 默认激活 ALL
+            let activeHref = null; // 默认不激活任何链接
 
-            // 检查当前路径是否属于 Criticism 分类
+            // 检查当前路径是否属于 Criticism 分类 (例如: /categories/Criticism)
             if (currentPath.startsWith('/categories/Criticism')) {
                 activeHref = '/categories/Criticism/';
-            // 检查当前路径是否属于 Others 分类
+            // 检查当前路径是否属于 Others 分类 (例如: /categories/others)
             } else if (currentPath.startsWith('/categories/others')) {
                 activeHref = '/categories/others/';
-            } else {
-                // 如果路径是根目录 ('/' 或 '') 或其他不匹配分类的页面，则激活 ALL
-                activeHref = '/';
-            }
+            // 检查当前路径是否是首页 (例如: / 或 '')
+            } else if (currentPath === '' || currentPath === '/') {
+                activeHref = '/'; // ALL 的 href
+            } 
+            // ⚠️ 关键：对于文章页面，activeHref 将保持为 null，从而不触发高亮。
 
             // 4. 应用 active class
-            const activeLink = document.querySelector(`.nav-links-wrapper a[href='${activeHref}']`);
-            if (activeLink) {
-                activeLink.classList.add('active');
+            if (activeHref !== null) {
+                const activeLink = document.querySelector(`.nav-links-wrapper a[href='${activeHref}']`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
             }
+            // 移除上一次的 else 块，确保在 activeHref 为 null (文章页) 时不执行任何操作。
         }
             
         // ----------------------------------------------------
@@ -443,5 +448,5 @@
         }
     </script>
     
-<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-10,35],"scale":0.15,"stageStyle":{"width":250,"height":250}}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}}});</script><!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-10,35],"scale":0.15,"stageStyle":{"width":250,"height":250}}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":null}});</script><!-- hexo injector body_end end --></body>
 </html>
