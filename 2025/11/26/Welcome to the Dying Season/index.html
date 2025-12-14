@@ -4,35 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        html{
-            font-size: 50px;
+        /* CSS 变量定义颜色，改为黑白灰色调 */
+        :root {
+            --primary-color: #000000;
+            --primary-light: #555555;
+            --text-color: rgba(0, 0, 0, 0.87);
+            --text-color-light: rgba(0, 0, 0, 0.6);
+            --background-color: #F5F5F5;
+            --surface-color-transparent: rgba(255, 255, 255, 0.9);
+            --surface-color: #FFFFFF;
+            --border-color: #EEEEEE;
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         }
-        .body{
+
+        /* 基础重置和字体 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 布局容器 */
+        .page-container {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            /* 底部留出空间给固定底边栏 */
+            padding-bottom: 50px;
+        }
+
+        /* 顶部栏/Header - 应用高斯模糊 */
+        header {
+            background-color: var(--surface-color-transparent);
+            color: var(--primary-color);
+            width: 100%;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-1);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            position: sticky; 
+            top: 0;
+            z-index: 100; 
+        }
+
+        /* 双栏主布局 */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0; 
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 300px;
+            margin-left: 20px;
+            flex-shrink: 0; 
+        }
+
+        /* 卡片基础样式 */
+        .card {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-1);
+            margin-bottom: 20px;
+        }
+
+        /* 链接基础样式 */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+
+        /* 底部固定栏样式 - 应用高斯模糊 */
+        .fixed-footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: var(--surface-color-transparent);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            display: flex;
             align-items: center;
+            justify-content: center;
+            z-index: 99;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: var(--text-color-light);
+            font-size: 0.9rem;
+        }
+
+        /* 媒体查询 (保持不变) */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 0 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1; 
+            }
         }
     </style>
+    
+   
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
-<body class="body">
-    <header>这里应该是个header来着</header>
-    <br>
-    <div><h1 style="font-size: 1rem;">Welcome to the Dying Season</h1>
-<p>8.5&#x2F;10<br>やなぎなぎ的红烧天堂二专，今日刚发售<br>虽然基本都是老曲但是给我听爽了加急插队来写评价<br>不同于之前发的摇滚&#x2F;泛摇滚，这张是很典的流行乐专辑，可以说是单曲合辑，当然前面发的两个专也是这样，但是说的话又要扣分了，对纯流行乐放宽点评价<br>和SiL的歌一样，同样作为红烧天堂的游戏配乐，麻子词曲这块还是很稳的<br>没有烂曲，最次也至少是能听<br>专辑名很明显融合了所收录的两首歌的歌名：「死にゆく季節のきみへ」「Welcome to the Front Line!」，还是游戏主基调，最上の、切なさを<br>「死にゆく季節のきみへ」当prologue真的是神来之笔，开头的键盘一响浑身鸡皮疙瘩了，主歌较为欢快的风格，歌词也是情歌，但是看标题就知道不是什么轻松的故事，最后“きみだけに”的复读情感爆发很到位<br>「ワルキューレの叙事詩」可以说是十三年前麻子和なぎ的合作专辑「終わりの惑星の Love Song」的精神续作，如标题所言，是叙事うた(雾)，编曲少了些同人味，なぎ的唱法也有些改变，但是歌词还是那个味<br>「Asian Soul」是一首略显特殊的歌曲，貌似是麻子关于泡沫经济时期日本所做(?)，但是歌词的确能有共感，毕竟标题是亚洲。“経済の中心地になり果てても Asian Soul この血を誇りに思う”最后的说唱(不是rap的那个，我也不知道专业名词是什么)很洗脑 “行こうぜ この命は一瞬もいいところ”<br>说到洗脑就不得不说「シヴァ」「Welcome to the Front Line!」两首，尤其「Welcome to the Front Line!」是麻子发癫时期所作(雾)，歌词很有意思<br>epilogue「オールトの曇」真的是一首全程很有意思的歌，当初第一次听的时候还无感，但是越听越上头，依旧是叙事情歌，依旧是bad end，作为一首流行乐长达六分二十六秒，结构精巧。主歌情绪很平稳也很短，和导歌长度差不多，导歌部分先是含蓄然后情绪骤变，到了副歌的情绪爆发，副歌的歌词很整齐，不过我还是喜欢第二段主歌“月を目指し旅立った日 火星探査成功した日 いつかオールトの曇も見つけ外を知るだろう それが暮らしさ”。当然我认为最值得一提的是桥段，这段旋律太好听了。到了最后一段副歌的时候歌曲才进行一半多，最后尾歌的歌词也很，拟声词大学习。结束以后歌曲还剩一分钟，是单曲版没有的hidden track，再次想到「終わりの惑星の Love Song」<br>但是有一说一ゆーげん的画风好看但是人体是不是有点怪啊(123456，7890)</p>
+<body class="page-container">
+    <header>单行路OWR的博客Beta</header>
 
-
-<img src="\images\Welcome%20to%20the%20Dying%20Season.jpg" width="100">
-<br>
-2025-11-26 20:42:14</div>
-    <br>
-    <footer>这里应该是个footer来着</footer>
-</body>
-<script>
-    function htmlFontSize(){
-        document.documentElement.style.fontSize = screen.width/75 + "px"
+    <div class="main-wrapper">
+        <div class="main-content">
+            <style>
+    /* 文章容器卡片 */
+    .article-container {
+        background-color: var(--surface-color);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-1);
     }
-    htmlFontSize()
-    window.onresize = htmlFontSize
-</script>
+
+    /* 文章标题 */
+    .article-title {
+        font-size: 2rem; /* 更大的标题 */
+        font-weight: 700; /* 粗体 */
+        color: var(--text-color);
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    /* 文章元数据（日期） */
+    .article-meta {
+        color: var(--text-color-light);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    /* 内容区域图片 */
+    .article-image {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+        border-radius: 4px;
+        box-shadow: var(--shadow-1);
+    }
+
+    /* 主内容区排版优化 */
+    .article-content {
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+    .article-content p {
+        margin-bottom: 1em;
+    }
+
+</style>
+
+<div class="article-container">
+    <h1 class="article-title">Welcome to the Dying Season</h1>
+
+    
+
+    <div class="article-meta">
+        发布日期: 2025年11月26日 20:42
+    </div>
+    
+    <img class="article-image" src="/images/Welcome%20to%20the%20Dying%20Season.jpg" alt="Welcome to the Dying Season">
+    
+    <div class="article-content">
+        <p>8.5&#x2F;10<br>やなぎなぎ的红烧天堂二专，今日刚发售<br>虽然基本都是老曲但是给我听爽了加急插队来写评价<br>不同于之前发的摇滚&#x2F;泛摇滚，这张是很典的流行乐专辑，可以说是单曲合辑，当然前面发的两个专也是这样，但是说的话又要扣分了，对纯流行乐放宽点评价<br>和SiL的歌一样，同样作为红烧天堂的游戏配乐，麻子词曲这块还是很稳的<br>没有烂曲，最次也至少是能听<br>专辑名很明显融合了所收录的两首歌的歌名：「死にゆく季節のきみへ」「Welcome to the Front Line!」，还是游戏主基调，最上の、切なさを<br>「死にゆく季節のきみへ」当prologue真的是神来之笔，开头的键盘一响浑身鸡皮疙瘩了，主歌较为欢快的风格，歌词也是情歌，但是看标题就知道不是什么轻松的故事，最后“きみだけに”的复读情感爆发很到位<br>「ワルキューレの叙事詩」可以说是十三年前麻子和なぎ的合作专辑「終わりの惑星の Love Song」的精神续作，如标题所言，是叙事うた(雾)，编曲少了些同人味，なぎ的唱法也有些改变，但是歌词还是那个味<br>「Asian Soul」是一首略显特殊的歌曲，貌似是麻子关于泡沫经济时期日本所做(?)，但是歌词的确能有共感，毕竟标题是亚洲。“経済の中心地になり果てても Asian Soul この血を誇りに思う”最后的说唱(不是rap的那个，我也不知道专业名词是什么)很洗脑 “行こうぜ この命は一瞬もいいところ”<br>说到洗脑就不得不说「シヴァ」「Welcome to the Front Line!」两首，尤其「Welcome to the Front Line!」是麻子发癫时期所作(雾)，歌词很有意思<br>epilogue「オールトの曇」真的是一首全程很有意思的歌，当初第一次听的时候还无感，但是越听越上头，依旧是叙事情歌，依旧是bad end，作为一首流行乐长达六分二十六秒，结构精巧。主歌情绪很平稳也很短，和导歌长度差不多，导歌部分先是含蓄然后情绪骤变，到了副歌的情绪爆发，副歌的歌词很整齐，不过我还是喜欢第二段主歌“月を目指し旅立った日 火星探査成功した日 いつかオールトの曇も見つけ外を知るだろう それが暮らしさ”。当然我认为最值得一提的是桥段，这段旋律太好听了。到了最后一段副歌的时候歌曲才进行一半多，最后尾歌的歌词也很，拟声词大学习。结束以后歌曲还剩一分钟，是单曲版没有的hidden track，再次想到「終わりの惑星の Love Song」<br>但是有一说一ゆーげん的画风好看但是人体是不是有点怪啊(123456，7890)</p>
+
+    </div>
+    
+</div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+                <p class="profile-bio">CCB</p>
+            </div>
+
+        </aside>
+    </div>
+
+    <div class="fixed-footer-bar">
+        <span>2</span>
+    </div>
+    
+</body>
 </html>

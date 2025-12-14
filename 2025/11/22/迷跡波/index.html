@@ -4,35 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        html{
-            font-size: 50px;
+        /* CSS 变量定义颜色，改为黑白灰色调 */
+        :root {
+            --primary-color: #000000;
+            --primary-light: #555555;
+            --text-color: rgba(0, 0, 0, 0.87);
+            --text-color-light: rgba(0, 0, 0, 0.6);
+            --background-color: #F5F5F5;
+            --surface-color-transparent: rgba(255, 255, 255, 0.9);
+            --surface-color: #FFFFFF;
+            --border-color: #EEEEEE;
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         }
-        .body{
+
+        /* 基础重置和字体 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 布局容器 */
+        .page-container {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            /* 底部留出空间给固定底边栏 */
+            padding-bottom: 50px;
+        }
+
+        /* 顶部栏/Header - 应用高斯模糊 */
+        header {
+            background-color: var(--surface-color-transparent);
+            color: var(--primary-color);
+            width: 100%;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-1);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            position: sticky; 
+            top: 0;
+            z-index: 100; 
+        }
+
+        /* 双栏主布局 */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0; 
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 300px;
+            margin-left: 20px;
+            flex-shrink: 0; 
+        }
+
+        /* 卡片基础样式 */
+        .card {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-1);
+            margin-bottom: 20px;
+        }
+
+        /* 链接基础样式 */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+
+        /* 底部固定栏样式 - 应用高斯模糊 */
+        .fixed-footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: var(--surface-color-transparent);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            display: flex;
             align-items: center;
+            justify-content: center;
+            z-index: 99;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: var(--text-color-light);
+            font-size: 0.9rem;
+        }
+
+        /* 媒体查询 (保持不变) */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 0 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1; 
+            }
         }
     </style>
+    
+   
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
-<body class="body">
-    <header>这里应该是个header来着</header>
-    <br>
-    <div><h1 style="font-size: 1rem;">迷跡波</h1>
-<p>3.5&#x2F;10<br>耳朵的刑具，极致糟糕的录音混音<br>首先分低主要原因就是烂录混音，当然本身音乐性也就那样，不考虑录混的话大概6-7分之间。<br>看了一下last.fm，近半年就听过一次影色舞，刚刚听完一次全专，耳朵真受不了啊。<br>声音混成一团，完全没有分离度，还有毫无立体可言的空间感，毫无起伏可言的动态。<br>硬拉增益导致的削波让本来就是失真效果器的吉他进一步失真，一个乐器就能做到嘈杂(虽然是双吉他配置就是了)。<br>我很好奇这些日本人怎么做到的听不清贝斯但低频又多到轰头，基本只有潜在表明和迷路日々的贝斯能全程听清。<br>在如此烂的器乐的衬托下羊姐的声音本应能显得正常一点，但是过度增益的器乐压过了人声，再加上声音混作一团，本来就肾虚声更肾虚了。<br>完全商业化公式化的作词作曲编曲，但是偶然还有些好东西<br>春日影(MyGO!!!!! ver.)虽然有些小鬼，不过ktv金曲。<br>——何で春日影やったの？<br>無路矢的前奏感觉很熟悉，这点不论。和声(叫这个吗？)很独特，也是我曲子最喜欢的一首(大概)<br>但是11.22是高松灯的生日<br>另外说句题外话狗团的专辑出得好快，ras好久才有个专，至今好像也就两个专吧</p>
+<body class="page-container">
+    <header>单行路OWR的博客Beta</header>
 
-
-<img src="\images\%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" width="100">
-<br>
-2025-11-22 00:00:02</div>
-    <br>
-    <footer>这里应该是个footer来着</footer>
-</body>
-<script>
-    function htmlFontSize(){
-        document.documentElement.style.fontSize = screen.width/75 + "px"
+    <div class="main-wrapper">
+        <div class="main-content">
+            <style>
+    /* 文章容器卡片 */
+    .article-container {
+        background-color: var(--surface-color);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: var(--shadow-1);
     }
-    htmlFontSize()
-    window.onresize = htmlFontSize
-</script>
+
+    /* 文章标题 */
+    .article-title {
+        font-size: 2rem; /* 更大的标题 */
+        font-weight: 700; /* 粗体 */
+        color: var(--text-color);
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    /* 文章元数据（日期） */
+    .article-meta {
+        color: var(--text-color-light);
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    /* 内容区域图片 */
+    .article-image {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+        border-radius: 4px;
+        box-shadow: var(--shadow-1);
+    }
+
+    /* 主内容区排版优化 */
+    .article-content {
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+    .article-content p {
+        margin-bottom: 1em;
+    }
+
+</style>
+
+<div class="article-container">
+    <h1 class="article-title">迷跡波</h1>
+
+    
+
+    <div class="article-meta">
+        发布日期: 2025年11月22日 00:00
+    </div>
+    
+    <img class="article-image" src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" alt="迷跡波">
+    
+    <div class="article-content">
+        <p>3.5&#x2F;10<br>耳朵的刑具，极致糟糕的录音混音<br>首先分低主要原因就是烂录混音，当然本身音乐性也就那样，不考虑录混的话大概6-7分之间。<br>看了一下last.fm，近半年就听过一次影色舞，刚刚听完一次全专，耳朵真受不了啊。<br>声音混成一团，完全没有分离度，还有毫无立体可言的空间感，毫无起伏可言的动态。<br>硬拉增益导致的削波让本来就是失真效果器的吉他进一步失真，一个乐器就能做到嘈杂(虽然是双吉他配置就是了)。<br>我很好奇这些日本人怎么做到的听不清贝斯但低频又多到轰头，基本只有潜在表明和迷路日々的贝斯能全程听清。<br>在如此烂的器乐的衬托下羊姐的声音本应能显得正常一点，但是过度增益的器乐压过了人声，再加上声音混作一团，本来就肾虚声更肾虚了。<br>完全商业化公式化的作词作曲编曲，但是偶然还有些好东西<br>春日影(MyGO!!!!! ver.)虽然有些小鬼，不过ktv金曲。<br>——何で春日影やったの？<br>無路矢的前奏感觉很熟悉，这点不论。和声(叫这个吗？)很独特，也是我曲子最喜欢的一首(大概)<br>但是11.22是高松灯的生日<br>另外说句题外话狗团的专辑出得好快，ras好久才有个专，至今好像也就两个专吧</p>
+
+    </div>
+    
+</div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+                <p class="profile-bio">CCB</p>
+            </div>
+
+        </aside>
+    </div>
+
+    <div class="fixed-footer-bar">
+        <span>2</span>
+    </div>
+    
+</body>
 </html>

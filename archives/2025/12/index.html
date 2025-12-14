@@ -4,81 +4,282 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        html{
-            font-size: 50px;
+        /* CSS 变量定义颜色，改为黑白灰色调 */
+        :root {
+            --primary-color: #000000;
+            --primary-light: #555555;
+            --text-color: rgba(0, 0, 0, 0.87);
+            --text-color-light: rgba(0, 0, 0, 0.6);
+            --background-color: #F5F5F5;
+            --surface-color-transparent: rgba(255, 255, 255, 0.9);
+            --surface-color: #FFFFFF;
+            --border-color: #EEEEEE;
+            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
         }
-        .body{
+
+        /* 基础重置和字体 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 布局容器 */
+        .page-container {
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            /* 底部留出空间给固定底边栏 */
+            padding-bottom: 50px;
+        }
+
+        /* 顶部栏/Header - 应用高斯模糊 */
+        header {
+            background-color: var(--surface-color-transparent);
+            color: var(--primary-color);
+            width: 100%;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-1);
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            position: sticky; 
+            top: 0;
+            z-index: 100; 
+        }
+
+        /* 双栏主布局 */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex-grow: 1;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0; 
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 300px;
+            margin-left: 20px;
+            flex-shrink: 0; 
+        }
+
+        /* 卡片基础样式 */
+        .card {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-1);
+            margin-bottom: 20px;
+        }
+
+        /* 链接基础样式 */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+
+        /* 底部固定栏样式 - 应用高斯模糊 */
+        .fixed-footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: var(--surface-color-transparent);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            display: flex;
             align-items: center;
+            justify-content: center;
+            z-index: 99;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: var(--text-color-light);
+            font-size: 0.9rem;
+        }
+
+        /* 媒体查询 (保持不变) */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 0 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1; 
+            }
         }
     </style>
+    
+   
+    
 <meta name="generator" content="Hexo 8.1.1"></head>
-<body class="body">
-    <header>这里应该是个header来着</header>
-    <br>
-    <div>
-<ul style="list-style: none;">
-  
-    <li>
-      <a href="2025/12/13/二手玫瑰/">
-        二手玫瑰
-        <img src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.jpg" width="100" alt="二手玫瑰">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/12/05/悲剧的诞生/">
-        悲剧的诞生
-        <img src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.jpg" width="100" alt="悲剧的诞生">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/11/30/時代在召喚/">
-        時代在召喚
-        <img src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.jpg" width="100" alt="時代在召喚">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/11/26/Welcome to the Dying Season/">
-        Welcome to the Dying Season
-        <img src="/images/Welcome%20to%20the%20Dying%20Season.jpg" width="100" alt="Welcome to the Dying Season">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/11/22/迷跡波/">
-        迷跡波
-        <img src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" width="100" alt="迷跡波">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/11/18/In The Court Of The Crimson King/">
-        In The Court Of The Crimson King
-        <img src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.jpg" width="100" alt="In The Court Of The Crimson King">
-      </a>
-    </li>
-  
-    <li>
-      <a href="2025/11/15/感情エフェクト/">
-        感情エフェクト
-        <img src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.jpg" width="100" alt="感情エフェクト">
-      </a>
-    </li>
-  
-</ul></div>
-    <br>
-    <footer>这里应该是个footer来着</footer>
-</body>
-<script>
-    function htmlFontSize(){
-        document.documentElement.style.fontSize = screen.width/75 + "px"
+<body class="page-container">
+    <header>单行路OWR的博客Beta</header>
+
+    <div class="main-wrapper">
+        <div class="main-content">
+            
+
+<style>
+    /* 列表容器 */
+    .post-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
-    htmlFontSize()
-    window.onresize = htmlFontSize
-</script>
+
+    /* 单个文章卡片样式 */
+    .post-list-item {
+        margin-bottom: 16px;
+    }
+
+    /* 链接和卡片内容区域 */
+    .post-card {
+        display: flex;
+        background-color: var(--surface-color);
+        padding: 16px;
+        border-radius: 8px; /* 圆角 */
+        box-shadow: var(--shadow-1); /* 默认阴影 (Elevation 1) */
+        transition: box-shadow 0.3s, transform 0.3s;
+        overflow: hidden; /* 防止图片溢出 */
+    }
+
+    /* 鼠标悬停和聚焦时的效果 - 提升阴影 (Elevation 2) */
+    .post-card:hover, .post-card:focus {
+        box-shadow: var(--shadow-2);
+        transform: translateY(-2px); /* 轻微上浮 */
+    }
+
+    /* 卡片左侧内容 */
+    .card-content {
+        flex-grow: 1;
+        padding-right: 16px;
+    }
+
+    /* 文章标题 */
+    .post-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-color);
+        margin: 0;
+    }
+
+    /* 文章缩略图 */
+    .post-thumbnail {
+        width: 100px;
+        height: 100px;
+        object-fit: cover; /* 裁剪图片以适应容器 */
+        border-radius: 4px;
+        flex-shrink: 0; /* 防止图片缩小 */
+    }
+</style>
+
+<ul class="post-list">
+  
+    <li class="post-list-item">
+      <a href="2025/12/13/二手玫瑰/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">二手玫瑰</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.jpg" alt="二手玫瑰">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/12/05/悲剧的诞生/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">悲剧的诞生</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.jpg" alt="悲剧的诞生">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/11/30/時代在召喚/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">時代在召喚</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.jpg" alt="時代在召喚">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/11/26/Welcome to the Dying Season/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">Welcome to the Dying Season</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/Welcome%20to%20the%20Dying%20Season.jpg" alt="Welcome to the Dying Season">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/11/22/迷跡波/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">迷跡波</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" alt="迷跡波">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/11/18/In The Court Of The Crimson King/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">In The Court Of The Crimson King</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.jpg" alt="In The Court Of The Crimson King">
+      </a>
+    </li>
+  
+    <li class="post-list-item">
+      <a href="2025/11/15/感情エフェクト/" class="post-card">
+        <div class="card-content">
+            <h2 class="post-title">感情エフェクト</h2>
+        </div>
+        <img class="post-thumbnail" src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.jpg" alt="感情エフェクト">
+      </a>
+    </li>
+  
+</ul>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+                <p class="profile-bio">CCB</p>
+            </div>
+
+        </aside>
+    </div>
+
+    <div class="fixed-footer-bar">
+        <span>2</span>
+    </div>
+    
+</body>
 </html>
