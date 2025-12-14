@@ -12,10 +12,13 @@
             --primary-light: #3700B3;
             --text-color: rgba(255, 255, 255, 0.87);
             --text-color-light: rgba(255, 255, 255, 0.6);
-            --background-color: #121212;
-            --surface-color-transparent: rgba(33, 33, 33, 0.9);
-            --surface-color: #1E1E1E;
-            --border-color: #333333;
+            /* REVERTED: 背景色还原 */
+            --background-color: #121212; 
+            
+            /* MODIFICATION: 更深的颜色，更高的透明度 */
+            --surface-color-transparent: rgba(16, 16, 16, 0.7); /* 更深、更透明的标题栏/半透明表面 */
+            --surface-color: rgba(16, 16, 16, 0.8); /* 更深、半透明的卡片背景 */
+            --border-color: #181818; /* 更深的边框色 */
             --shadow-1: none;
             --shadow-2: none;
 
@@ -49,12 +52,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* 确保在所有内容之下 */
+            z-index: -1;
+            /* 确保在所有内容之下 */
             
-            /* 变暗效果：黑色半透明蒙层 */
-            background-color: rgba(0, 0, 0, 0.6); /* 60% 透明度的黑色蒙层 */
+            /* REVERTED: 变暗效果还原为原始 0.6 透明度 */
+            background-color: rgba(0, 0, 0, 0.6);
             
-            /* 模糊效果 */
+            /* REVERTED: 模糊效果还原为原始 5px */
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
         }
@@ -253,7 +257,6 @@
     <div class="main-wrapper">
         <div class="main-content">
   
-
             <style>
     /* 文章容器卡片 */
     .article-container {
@@ -328,7 +331,6 @@
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
           
-
             <p class="profile-bio">CCB</p>
             </div>
 
@@ -339,8 +341,8 @@
      
            <p id="randomQuoteText" 
                    style="margin: 0;
-font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    Why did He lose six million Jews?
+                   font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    
                 </p>
             </div>
             </aside>
@@ -360,7 +362,7 @@ font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
         // 3. 切换引言的主函数
         function changeQuote() {
       
-      var quoteElement = document.getElementById('randomQuoteText');
+            var quoteElement = document.getElementById('randomQuoteText');
             var cardElement = document.getElementById('quoteCard'); // 获取父级卡片元素
             
             // *** 关键修改：延迟加载数据，确保函数定义不会因 JSON 错误而中断 ***
@@ -371,37 +373,46 @@ font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
                     allQuotes = JSON.parse(cardElement.dataset.quotes);
                 } catch (e) {
                     console.error("Quotes data parsing failed:", e);
-// 解析失败时，设置为空数组，以触发数据错误提示
+                    // 解析失败时，设置为空数组，以触发数据错误提示
                     allQuotes = [];
-}
+                }
             }
 
             if (!allQuotes || allQuotes.length === 0) 
             {
                 // 如果数据错误或解析失败
                 quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
-return;
+                return;
             }
 
             var newIndex;
             var newQuote;
-var maxAttempts = 5;
+            var maxAttempts = 5;
             var attempts = 0;
             
             // 尝试获取当前显示的引言文本（需要先移除 <br> 标签和多余空格）
             var currentHTML = quoteElement.innerHTML;
-// 移除 <br> 标签，并用空格替换
+            // 移除 <br> 标签，并用空格替换
             var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
-// 循环选择一个新的引言，并尽量避免与当前引言重复
+            // 循环选择一个新的引言，并尽量避免与当前引言重复
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);
-newQuote = allQuotes[newIndex];
+                newQuote = allQuotes[newIndex];
                 attempts++;
             } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
-// 格式化并更新页面
+            // 格式化并更新页面
             quoteElement.innerHTML = formatQuote(newQuote);
-}
+        }
     </script>
     
-</body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-10,35],"scale":0.15,"stageStyle":{"width":250,"height":250}}],parentElement:document.body,primaryColor:"var(--btn-bg)",sayHello:false,tips:{style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:function(){
+  return axios.get('https://v1.hitokoto.cn?c=i')
+    .then(function (response) {
+      return response.data.hitokoto ;
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+}
+}}});</script><!-- hexo injector body_end end --></body>
 </html>
