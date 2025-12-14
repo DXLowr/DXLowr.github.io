@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
    <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
@@ -13,14 +12,14 @@
             --text-color: rgba(255, 255, 255, 0.87);
             --text-color-light: rgba(255, 255, 255, 0.6);
             --background-color: #121212;
-            --surface-color-transparent: rgba(33, 33, 33, 0.9);
+            --surface-color-transparent: rgba(16, 16, 16, 0.8);
             --surface-color: #1E1E1E;
             --border-color: #333333;
             --shadow-1: none;
             --shadow-2: none;
 
             /* 【新增：用于背景图片的 CSS 变量】 */
-            --bg-image-url: url('/images/background.jpg');
+            --bg-image-url: url('/images/background.webp');
         }
 
         /* 基础重置和字体 */
@@ -103,7 +102,7 @@
 
         /* 滚动导航栏 - 随内容滚动，位于标题下方 */
         .scrolling-nav-bar {
-            background-color: var(--surface-color);
+            background-color: var(--surface-color-transparent);
             width: 100%;
             padding: 10px 20px 16px;
             z-index: 90; 
@@ -178,7 +177,7 @@
 
         /* 卡片基础样式 */
         .card {
-            background-color: var(--surface-color);
+            background-color: var(--surface-color-transparent);
             padding: 20px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
@@ -258,7 +257,7 @@
             <style>
     /* 文章容器卡片 */
     .article-container {
-        background-color: var(--surface-color); /* 深色卡片背景 */
+        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
         padding: 30px;
         border-radius: 4px; /* 略微减少圆角 */
         /* box-shadow: var(--shadow-1); - 移除阴影 */
@@ -328,19 +327,18 @@
             <div class="card" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
-          
-            <p class="profile-bio">CCB</p>
+                <p class="profile-bio">test</p>
             </div>
 
             <div class="card quote-card" 
                  id="quoteCard" 
                  onclick="changeQuote()"
-                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;]'> 
+                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;]'> 
      
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    死にたかった 死ななくてよかった
+                    野心勃勃的灯火<br>瞬间吞没黑暗的脸庞
                 </p>
             </div>
             </aside>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
    <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
@@ -13,14 +12,14 @@
             --text-color: rgba(255, 255, 255, 0.87);
             --text-color-light: rgba(255, 255, 255, 0.6);
             --background-color: #121212;
-            --surface-color-transparent: rgba(33, 33, 33, 0.9);
+            --surface-color-transparent: rgba(16, 16, 16, 0.8);
             --surface-color: #1E1E1E;
             --border-color: #333333;
             --shadow-1: none;
             --shadow-2: none;
 
             /* 【新增：用于背景图片的 CSS 变量】 */
-            --bg-image-url: url('/images/background.jpg');
+            --bg-image-url: url('/images/background.webp');
         }
 
         /* 基础重置和字体 */
@@ -103,7 +102,7 @@
 
         /* 滚动导航栏 - 随内容滚动，位于标题下方 */
         .scrolling-nav-bar {
-            background-color: var(--surface-color);
+            background-color: var(--surface-color-transparent);
             width: 100%;
             padding: 10px 20px 16px;
             z-index: 90; 
@@ -178,7 +177,7 @@
 
         /* 卡片基础样式 */
         .card {
-            background-color: var(--surface-color);
+            background-color: var(--surface-color-transparent);
             padding: 20px;
             border-radius: 4px;
             border: 1px solid var(--border-color);
@@ -278,7 +277,7 @@
     /* 链接和卡片内容区域 */
     .post-card {
         display: flex;
-        background-color: var(--surface-color); /* 深色卡片背景 */
+        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
         padding: 16px;
         border-radius: 4px;
         border: 1px solid var(--border-color);
@@ -371,11 +370,10 @@
       <li class="post-list-item">
         
         <a href="/2025/12/13/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0/" class="post-card">
-        
-          
             
             
-                <img src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.jpg" alt="二手玫瑰 封面" class="post-thumbnail">
+            
+                <img src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.webp" alt="二手玫瑰 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -395,11 +393,10 @@
       <li class="post-list-item">
         
         <a href="/2025/12/05/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F/" class="post-card">
-        
-          
             
             
-                <img src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.jpg" alt="悲剧的诞生 封面" class="post-thumbnail">
+            
+                <img src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.webp" alt="悲剧的诞生 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -417,11 +414,10 @@
       <li class="post-list-item">
         
         <a href="/2025/11/30/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A/" class="post-card">
-        
-          
             
             
-                <img src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.jpg" alt="時代在召喚 封面" class="post-thumbnail">
+            
+                <img src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.webp" alt="時代在召喚 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -439,11 +435,10 @@
       <li class="post-list-item">
         
         <a href="/2025/11/26/Welcome%20to%20the%20Dying%20Season/" class="post-card">
-        
-          
             
             
-                <img src="/images/Welcome%20to%20the%20Dying%20Season.jpg" alt="Welcome to the Dying Season 封面" class="post-thumbnail">
+            
+                <img src="/images/Welcome%20to%20the%20Dying%20Season.webp" alt="Welcome to the Dying Season 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -461,11 +456,10 @@
       <li class="post-list-item">
         
         <a href="/2025/11/22/%E8%BF%B7%E8%B7%A1%E6%B3%A2/" class="post-card">
-        
-          
             
             
-                <img src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" alt="迷跡波 封面" class="post-thumbnail">
+            
+                <img src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.webp" alt="迷跡波 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -483,11 +477,10 @@
       <li class="post-list-item">
         
         <a href="/2025/11/18/In%20The%20Court%20Of%20The%20Crimson%20King/" class="post-card">
-        
-          
             
             
-                <img src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.jpg" alt="In The Court Of The Crimson King 封面" class="post-thumbnail">
+            
+                <img src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.webp" alt="In The Court Of The Crimson King 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -505,11 +498,10 @@
       <li class="post-list-item">
         
         <a href="/2025/11/15/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/" class="post-card">
-        
-          
             
             
-                <img src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.jpg" alt="感情エフェクト 封面" class="post-thumbnail">
+            
+                <img src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.webp" alt="感情エフェクト 封面" class="post-thumbnail" loading="lazy">
             
             
             <div class="card-content">
@@ -555,19 +547,18 @@
             <div class="card" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
-          
-            <p class="profile-bio">CCB</p>
+                <p class="profile-bio">test</p>
             </div>
 
             <div class="card quote-card" 
                  id="quoteCard" 
                  onclick="changeQuote()"
-                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;]'> 
+                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;]'> 
      
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    野心勃勃的灯火<br>瞬间吞没黑暗的脸庞
+                    我们不要一个被科学游戏污染的天空<br>我们不要一个被现实生活超越的时空
                 </p>
             </div>
             </aside>
