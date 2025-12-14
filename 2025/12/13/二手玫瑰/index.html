@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>单行路OWR的博客Beta</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* ... (CSS 部分保持不变) ... */
+   <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
             --primary-color: #BB86FC;
@@ -19,24 +18,55 @@
             --border-color: #333333;
             --shadow-1: none;
             --shadow-2: none;
+
+            /* 【新增：用于背景图片的 CSS 变量】 */
+            --bg-image-url: url('/images/background.jpg');
         }
 
         /* 基础重置和字体 */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color); 
+            background-color: transparent; /* 设为透明，让背景图片显示 */
             color: var(--text-color); 
             margin: 0;
             padding: 0;
             line-height: 1.6;
+ 
+            /* 背景图片样式：现在使用 CSS 变量 */
+            background-image: var(--bg-image-url);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center center;
         }
-
-        /* 布局容器 */
+        
+        /* 【新增：背景图片模糊和变暗蒙层】 */
+        /* 使用伪元素，并应用 backdrop-filter 实现模糊和变暗，同时保证内容清晰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* 确保在所有内容之下 */
+            
+            /* 变暗效果：黑色半透明蒙层 */
+            background-color: rgba(0, 0, 0, 0.6); /* 60% 透明度的黑色蒙层 */
+            
+            /* 模糊效果 */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        /* 确保页面容器在伪元素之上 */
         .page-container {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             padding-top: 60px;
+            position: relative; /* 确保内容位于伪元素之上 */
+            z-index: 0;
         }
 
         /* 固定标题栏 - 始终位于屏幕上方 */
@@ -223,6 +253,7 @@
     <div class="main-wrapper">
         <div class="main-content">
   
+
             <style>
     /* 文章容器卡片 */
     .article-container {
@@ -306,6 +337,7 @@
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
           
+
             <p class="profile-bio">CCB</p>
             </div>
 
@@ -313,10 +345,11 @@
                  id="quoteCard" 
                  onclick="changeQuote()"
                  data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;]'> 
-                <p id="randomQuoteText" 
+     
+           <p id="randomQuoteText" 
                    style="margin: 0;
-                font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    だって人生が長すぎる<br>「ムズイよ」
+font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    
                 </p>
             </div>
             </aside>
@@ -326,6 +359,7 @@
         // 1. 延迟加载 allQuotes 数组，初始化为 null
         let allQuotes = null; 
 
+
         // *** MODIFICATION 2: 修改格式化函数，将 # 替换为 <br>，而不是空格 ***
         function formatQuote(quote) {
             // 将 # 替换为 HTML 换行符 <br>
@@ -334,48 +368,48 @@
         
         // 3. 切换引言的主函数
         function changeQuote() {
-            var quoteElement = document.getElementById('randomQuoteText');
+      
+      var quoteElement = document.getElementById('randomQuoteText');
             var cardElement = document.getElementById('quoteCard'); // 获取父级卡片元素
             
             // *** 关键修改：延迟加载数据，确保函数定义不会因 JSON 错误而中断 ***
             if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
                 try {
-                    // 第一次点击时，从 HTML data-quotes 属性中安全读取并解析 JSON
+        
+            // 第一次点击时，从 HTML data-quotes 属性中安全读取并解析 JSON
                     allQuotes = JSON.parse(cardElement.dataset.quotes);
                 } catch (e) {
                     console.error("Quotes data parsing failed:", e);
-                    // 解析失败时，设置为空数组，以触发数据错误提示
-                    allQuotes = []; 
-                }
+// 解析失败时，设置为空数组，以触发数据错误提示
+                    allQuotes = [];
+}
             }
 
             if (!allQuotes || allQuotes.length === 0) 
             {
                 // 如果数据错误或解析失败
                 quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
-                return;
+return;
             }
 
             var newIndex;
             var newQuote;
-            var maxAttempts = 5;
+var maxAttempts = 5;
             var attempts = 0;
             
             // 尝试获取当前显示的引言文本（需要先移除 <br> 标签和多余空格）
             var currentHTML = quoteElement.innerHTML;
-            // 移除 <br> 标签，并用空格替换
+// 移除 <br> 标签，并用空格替换
             var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
-            
-            // 循环选择一个新的引言，并尽量避免与当前引言重复
+// 循环选择一个新的引言，并尽量避免与当前引言重复
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);
-                newQuote = allQuotes[newIndex];
+newQuote = allQuotes[newIndex];
                 attempts++;
             } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
-            
-            // 格式化并更新页面
+// 格式化并更新页面
             quoteElement.innerHTML = formatQuote(newQuote);
-        }
+}
     </script>
     
 </body>
