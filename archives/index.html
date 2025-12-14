@@ -6,25 +6,26 @@
     <title>单行路OWR的博客Beta</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS 变量定义颜色，改为黑白灰色调 */
+        /* ... (CSS 部分保持不变) ... */
+        /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
-            --primary-color: #000000;
-            --primary-light: #555555;
-            --text-color: rgba(0, 0, 0, 0.87);
-            --text-color-light: rgba(0, 0, 0, 0.6);
-            --background-color: #F5F5F5;
-            --surface-color-transparent: rgba(255, 255, 255, 0.9);
-            --surface-color: #FFFFFF;
-            --border-color: #EEEEEE;
-            --shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+            --primary-color: #BB86FC;
+            --primary-light: #3700B3;
+            --text-color: rgba(255, 255, 255, 0.87);
+            --text-color-light: rgba(255, 255, 255, 0.6);
+            --background-color: #121212;
+            --surface-color-transparent: rgba(33, 33, 33, 0.9);
+            --surface-color: #1E1E1E;
+            --border-color: #333333;
+            --shadow-1: none;
+            --shadow-2: none;
         }
 
         /* 基础重置和字体 */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            background-color: var(--background-color); 
+            color: var(--text-color); 
             margin: 0;
             padding: 0;
             line-height: 1.6;
@@ -35,34 +36,97 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* 底部留出空间给固定底边栏 */
-            padding-bottom: 50px;
+            padding-top: 60px;
         }
 
-        /* 顶部栏/Header - 应用高斯模糊 */
-        header {
+        /* 固定标题栏 - 始终位于屏幕上方 */
+        .fixed-title-bar {
             background-color: var(--surface-color-transparent);
-            color: var(--primary-color);
             width: 100%;
             padding: 16px 20px;
-            box-shadow: var(--shadow-1);
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
             backdrop-filter: blur(8px); 
             -webkit-backdrop-filter: blur(8px);
-            position: sticky; 
+            position: fixed;
             top: 0;
-            z-index: 100; 
+            left: 0;
+            z-index: 150;
+            border-bottom: 1px solid var(--border-color);
+            box-sizing: border-box;
         }
+        
+        /* 标题居中容器 */
+        .title-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: center;
+            margin: 0; 
+        }
+
+        /* 滚动导航栏 - 随内容滚动，位于标题下方 */
+        .scrolling-nav-bar {
+            background-color: var(--surface-color);
+            width: 100%;
+            padding: 10px 20px 16px;
+            z-index: 90; 
+            border-bottom: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+        
+        /* 导航链接居中容器 */
+        .nav-links-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* 导航链接项 */
+        .nav-item {
+            color: var(--text-color-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        /* 活动链接（当前页面）样式 */
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+
 
         /* 双栏主布局 */
         .main-wrapper {
             display: flex;
             width: 100%;
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
+            margin: 0 auto; 
+            padding: 20px 20px;
             flex-grow: 1;
         }
 
@@ -70,25 +134,25 @@
         .main-content {
             flex-grow: 1;
             width: 100%;
-            min-width: 0; 
+            min-width: 0;
         }
 
         /* 侧边栏样式 */
         .sidebar {
             width: 300px;
             margin-left: 20px;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
 
         /* 卡片基础样式 */
         .card {
             background-color: var(--surface-color);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-1);
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
             margin-bottom: 20px;
         }
-
+        
         /* 链接基础样式 */
         a {
             color: var(--primary-color);
@@ -96,42 +160,44 @@
             transition: color 0.2s;
         }
         a:hover {
-            color: var(--primary-light);
+            color: var(--text-color);
             text-decoration: underline;
         }
 
-        /* 底部固定栏样式 - 应用高斯模糊 */
-        .fixed-footer-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background-color: var(--surface-color-transparent);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 99;
-            padding: 0 20px;
-            box-sizing: border-box;
-            color: var(--text-color-light);
-            font-size: 0.9rem;
-        }
-
-        /* 媒体查询 (保持不变) */
+        /* 媒体查询 */
         @media (max-width: 960px) {
             .main-wrapper {
                 flex-direction: column;
-                padding: 0 10px;
+                padding: 20px 10px;
             }
             .sidebar {
                 width: 100%;
                 margin-left: 0;
-                order: -1; 
+                order: -1;
             }
+        }
+
+        /* 小屏幕导航适配 */
+        @media (max-width: 600px) {
+            .nav-links-wrapper {
+                gap: 15px;
+            }
+        }
+        
+        /* 引言卡片文本样式 */
+        .quote-card {
+            /* 💡 增加指针样式到整个卡片 */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .quote-card:hover {
+            background-color: #282828;
+            /* 悬停效果 */
+        }
+        .quote-card p {
+            line-height: 1.8;
+            word-wrap: break-word;
+            /* 移除光标样式，因为已经加到父级卡片上 */
         }
     </style>
     
@@ -139,13 +205,32 @@
     
 <meta name="generator" content="Hexo 8.1.1"></head>
 <body class="page-container">
-    <header>单行路OWR的博客Beta</header>
+    <div class="fixed-title-bar">
+        <div class="title-container">
+            <div class="site-title">单行路OWR的博客Beta</div>
+        </div>
+    </div>
+
+    <nav class="scrolling-nav-bar">
+        
+        <div class="nav-links-wrapper">
+            <a href="/" class="nav-item ">ALL</a>
+            <a href="/categories/criticism/" class="nav-item ">Criticism</a>
+            <a href="/categories/others/" class="nav-item ">Others</a>
+        </div>
+    </nav>
 
     <div class="main-wrapper">
         <div class="main-content">
+  
             
 
-<style>
+<div class="category-section">
+    <h2 class="category-title"></h2>
+    
+    
+        
+        <style>
     /* 列表容器 */
     .post-list {
         list-style: none;
@@ -161,24 +246,34 @@
     /* 链接和卡片内容区域 */
     .post-card {
         display: flex;
-        background-color: var(--surface-color);
+        background-color: var(--surface-color); /* 深色卡片背景 */
         padding: 16px;
-        border-radius: 8px; /* 圆角 */
-        box-shadow: var(--shadow-1); /* 默认阴影 (Elevation 1) */
-        transition: box-shadow 0.3s, transform 0.3s;
-        overflow: hidden; /* 防止图片溢出 */
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        box-shadow: none;
+        transition: border-color 0.3s, background-color 0.3s, transform 0.3s;
+        overflow: hidden;
     }
 
-    /* 鼠标悬停和聚焦时的效果 - 提升阴影 (Elevation 2) */
+    /* 鼠标悬停和聚焦时的效果 - 强调边框和背景 */
     .post-card:hover, .post-card:focus {
-        box-shadow: var(--shadow-2);
-        transform: translateY(-2px); /* 轻微上浮 */
+        box-shadow: none;
+        border-color: var(--primary-color);
+        background-color: #282828;
+        transform: translateY(-2px);
     }
 
-    /* 卡片左侧内容 */
+    /* 卡片左侧内容 (文字信息区域) */
     .card-content {
         flex-grow: 1;
-        padding-right: 16px;
+        
+        /* 保持右侧正常内边距 */
+        padding-right: 16px; 
+        
+        /* 【核心修改 2】添加左侧垂直分隔线 */
+        border-left: 1px solid var(--border-color);
+        /* 【核心修改 3】增加分隔线与文字信息之间的间隔 */
+        padding-left: 16px; 
     }
 
     /* 文章标题 */
@@ -186,100 +281,320 @@
         font-size: 1.2rem;
         font-weight: 500;
         color: var(--text-color);
+        margin: 0 0 4px 0;
+    }
+    
+    /* 文章日期样式 */
+    .post-date {
+        font-size: 0.85rem;
+        color: var(--text-color-light);
+        margin: 0 0 8px 0;
+    }
+    
+    /* 文章预览（摘录）样式 */
+    .post-excerpt {
+        font-size: 0.95rem;
+        color: var(--text-color-light);
         margin: 0;
+        /* 限制为两行并显示省略号 */
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+        max-height: 2.8em;
     }
 
     /* 文章缩略图 */
     .post-thumbnail {
-        width: 100px;
-        height: 100px;
+        width: 120px; 
+        height: 120px;
         object-fit: cover; /* 裁剪图片以适应容器 */
         border-radius: 4px;
-        flex-shrink: 0; /* 防止图片缩小 */
+        flex-shrink: 0;
+        border: 1px solid var(--border-color); /* 保持图片边框 */
+        
+        /* 【核心修改 1】增加图片与分隔线的间隔 */
+        margin-right: 16px; 
+    }
+    
+    @media (max-width: 600px) {
+        /* 在小屏幕上隐藏缩略图 */
+        .post-thumbnail {
+            display: none;
+        }
+        .card-content {
+            /* 移除小屏幕下的左侧边框和内边距 */
+            border-left: none;
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 </style>
 
+
+
 <ul class="post-list">
-  
-    <li class="post-list-item">
-      <a href="2025/12/13/二手玫瑰/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">二手玫瑰</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.jpg" alt="二手玫瑰">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/12/05/悲剧的诞生/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">悲剧的诞生</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.jpg" alt="悲剧的诞生">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/11/30/時代在召喚/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">時代在召喚</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.jpg" alt="時代在召喚">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/11/26/Welcome to the Dying Season/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">Welcome to the Dying Season</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/Welcome%20to%20the%20Dying%20Season.jpg" alt="Welcome to the Dying Season">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/11/22/迷跡波/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">迷跡波</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" alt="迷跡波">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/11/18/In The Court Of The Crimson King/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">In The Court Of The Crimson King</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.jpg" alt="In The Court Of The Crimson King">
-      </a>
-    </li>
-  
-    <li class="post-list-item">
-      <a href="2025/11/15/感情エフェクト/" class="post-card">
-        <div class="card-content">
-            <h2 class="post-title">感情エフェクト</h2>
-        </div>
-        <img class="post-thumbnail" src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.jpg" alt="感情エフェクト">
-      </a>
-    </li>
-  
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/12/13/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.jpg" alt="二手玫瑰 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">二手玫瑰</h2>
+                <p class="post-date">2025年12月13日</p>
+                
+                
+                
+                <p class="post-excerpt">7.3&#x2F;10(更新一下评分规则：x.x x∈N,0﹤x﹤10小数点前为个人尽量客观地评价，5以上为好，以下为差；小数点后为个人喜好，5以上为喜欢，以下为不喜欢
+正如专辑封面所言，最妖娆
+整张...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/12/05/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.jpg" alt="悲剧的诞生 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">悲剧的诞生</h2>
+                <p class="post-date">2025年12月5日</p>
+                
+                
+                
+                <p class="post-excerpt">7.7&#x2F;10诡异、怪诞的黑童话乐队15年重组之后发行首专，收录的都是乐队02年解散之前的作品如果说《時代在召喚》是直白的隐喻，那么这张就是隐晦的隐喻，感觉说了什么，但是我真的不知道说了什么(...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/11/30/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.jpg" alt="時代在召喚 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">時代在召喚</h2>
+                <p class="post-date">2025年11月30日</p>
+                
+                
+                
+                <p class="post-excerpt">不敢评分内地乐队，别问为什么乐队名专辑名歌名歌词全用繁体字相比曲来说，我认为词更值得说，当然曲也很强，但是我不是很懂假假條首专，充斥着隐喻和变形的专辑，比如几首歌名：湘靈鼓瑟 (Renaissance...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/11/26/Welcome%20to%20the%20Dying%20Season/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/Welcome%20to%20the%20Dying%20Season.jpg" alt="Welcome to the Dying Season 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">Welcome to the Dying Season</h2>
+                <p class="post-date">2025年11月26日</p>
+                
+                
+                
+                <p class="post-excerpt">8.5&#x2F;10やなぎなぎ的红烧天堂二专，今日刚发售虽然基本都是老曲但是给我听爽了加急插队来写评价不同于之前发的摇滚&#x2F;泛摇滚，这张是很典的流行乐专辑，可以说是单曲合辑，当然前面发的两个...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/11/22/%E8%BF%B7%E8%B7%A1%E6%B3%A2/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg" alt="迷跡波 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">迷跡波</h2>
+                <p class="post-date">2025年11月22日</p>
+                
+                
+                
+                <p class="post-excerpt">3.5&#x2F;10耳朵的刑具，极致糟糕的录音混音首先分低主要原因就是烂录混音，当然本身音乐性也就那样，不考虑录混的话大概6-7分之间。看了一下last.fm，近半年就听过一次影色舞，刚刚听完一次全...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/11/18/In%20The%20Court%20Of%20The%20Crimson%20King/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.jpg" alt="In The Court Of The Crimson King 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">In The Court Of The Crimson King</h2>
+                <p class="post-date">2025年11月18日</p>
+                
+                
+                
+                <p class="post-excerpt">9.9&#x2F;10都给我前摇了那还说啥了，高分给你了。King Crimson一专，几乎定义了前卫摇滚这一流派，尤其是折衷和交响。一共五首歌，都很喜欢，硬要说的话Moonchild的即兴部分过长，...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        
+        <a href="/2025/11/15/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/" class="post-card">
+        
+          
+            
+            
+                <img src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.jpg" alt="感情エフェクト 封面" class="post-thumbnail">
+            
+            
+            <div class="card-content">
+                <h2 class="post-title">感情エフェクト</h2>
+                <p class="post-date">2025年11月15日</p>
+                
+                
+                
+                <p class="post-excerpt">7&#x2F;10我在是个前摇批之前首先是个OOR歌迷(并非粉丝OOR的第三张录音室专辑，大概是OOR热度最低的一张专辑(棍母二专和地下时期的两张mini专除外)。我认为也是OOR最独特的一张专辑(还...</p> 
+                
+            </div>
+        </a>
+      </li>
+    
 </ul>
+    
+</div>
+
+<style>
+    /* 分类标题样式 */
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-top: 0; /* 首页顶部无额外间距 */
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 5px;
+    }
+    
+    .empty-message {
+        color: var(--text-color-light);
+        padding: 10px 0;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+</style>
         </div>
         
         <aside class="sidebar">
             <div class="card" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
-                <p class="profile-bio">CCB</p>
+          
+            <p class="profile-bio">CCB</p>
             </div>
 
-        </aside>
+            <div class="card quote-card" 
+                 id="quoteCard" 
+                 onclick="changeQuote()"
+                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;]'> 
+                <p id="randomQuoteText" 
+                   style="margin: 0;
+                font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    
+                </p>
+            </div>
+            </aside>
     </div>
 
-    <div class="fixed-footer-bar">
-        <span>1</span>
-    </div>
+    <script>
+        // 1. 延迟加载 allQuotes 数组，初始化为 null
+        let allQuotes = null; 
+
+        // *** MODIFICATION 2: 修改格式化函数，将 # 替换为 <br>，而不是空格 ***
+        function formatQuote(quote) {
+            // 将 # 替换为 HTML 换行符 <br>
+            return quote.replace(/#/g, '<br>');
+        }
+        
+        // 3. 切换引言的主函数
+        function changeQuote() {
+            var quoteElement = document.getElementById('randomQuoteText');
+            var cardElement = document.getElementById('quoteCard'); // 获取父级卡片元素
+            
+            // *** 关键修改：延迟加载数据，确保函数定义不会因 JSON 错误而中断 ***
+            if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
+                try {
+                    // 第一次点击时，从 HTML data-quotes 属性中安全读取并解析 JSON
+                    allQuotes = JSON.parse(cardElement.dataset.quotes);
+                } catch (e) {
+                    console.error("Quotes data parsing failed:", e);
+                    // 解析失败时，设置为空数组，以触发数据错误提示
+                    allQuotes = []; 
+                }
+            }
+
+            if (!allQuotes || allQuotes.length === 0) 
+            {
+                // 如果数据错误或解析失败
+                quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
+                return;
+            }
+
+            var newIndex;
+            var newQuote;
+            var maxAttempts = 5;
+            var attempts = 0;
+            
+            // 尝试获取当前显示的引言文本（需要先移除 <br> 标签和多余空格）
+            var currentHTML = quoteElement.innerHTML;
+            // 移除 <br> 标签，并用空格替换
+            var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
+            
+            // 循环选择一个新的引言，并尽量避免与当前引言重复
+            do {
+                newIndex = Math.floor(Math.random() * allQuotes.length);
+                newQuote = allQuotes[newIndex];
+                attempts++;
+            } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
+            
+            // 格式化并更新页面
+            quoteElement.innerHTML = formatQuote(newQuote);
+        }
+    </script>
     
 </body>
 </html>

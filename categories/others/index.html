@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单行路OWR的博客Beta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ... (CSS 部分保持不变) ... */
+        /* CSS 变量定义颜色，改为深色线条感风格 */
+        :root {
+            --primary-color: #BB86FC;
+            --primary-light: #3700B3;
+            --text-color: rgba(255, 255, 255, 0.87);
+            --text-color-light: rgba(255, 255, 255, 0.6);
+            --background-color: #121212;
+            --surface-color-transparent: rgba(33, 33, 33, 0.9);
+            --surface-color: #1E1E1E;
+            --border-color: #333333;
+            --shadow-1: none;
+            --shadow-2: none;
+        }
+
+        /* 基础重置和字体 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color); 
+            color: var(--text-color); 
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 布局容器 */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px;
+        }
+
+        /* 固定标题栏 - 始终位于屏幕上方 */
+        .fixed-title-bar {
+            background-color: var(--surface-color-transparent);
+            width: 100%;
+            padding: 16px 20px;
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 150;
+            border-bottom: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+        
+        /* 标题居中容器 */
+        .title-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: center;
+            margin: 0; 
+        }
+
+        /* 滚动导航栏 - 随内容滚动，位于标题下方 */
+        .scrolling-nav-bar {
+            background-color: var(--surface-color);
+            width: 100%;
+            padding: 10px 20px 16px;
+            z-index: 90; 
+            border-bottom: 1px solid var(--border-color);
+            box-sizing: border-box;
+        }
+        
+        /* 导航链接居中容器 */
+        .nav-links-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* 导航链接项 */
+        .nav-item {
+            color: var(--text-color-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 5px 0;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: var(--text-color);
+            text-decoration: none;
+        }
+
+        /* 活动链接（当前页面）样式 */
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width 0.3s;
+        }
+
+
+        /* 双栏主布局 */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto; 
+            padding: 20px 20px;
+            flex-grow: 1;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 300px;
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+
+        /* 卡片基础样式 */
+        .card {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        /* 链接基础样式 */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+
+        /* 媒体查询 */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 20px 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1;
+            }
+        }
+
+        /* 小屏幕导航适配 */
+        @media (max-width: 600px) {
+            .nav-links-wrapper {
+                gap: 15px;
+            }
+        }
+        
+        /* 引言卡片文本样式 */
+        .quote-card {
+            /* 💡 增加指针样式到整个卡片 */
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .quote-card:hover {
+            background-color: #282828;
+            /* 悬停效果 */
+        }
+        .quote-card p {
+            line-height: 1.8;
+            word-wrap: break-word;
+            /* 移除光标样式，因为已经加到父级卡片上 */
+        }
+    </style>
+    
+   
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body class="page-container">
+    <div class="fixed-title-bar">
+        <div class="title-container">
+            <div class="site-title">单行路OWR的博客Beta</div>
+        </div>
+    </div>
+
+    <nav class="scrolling-nav-bar">
+        
+        <div class="nav-links-wrapper">
+            <a href="/" class="nav-item ">ALL</a>
+            <a href="/categories/criticism/" class="nav-item ">Criticism</a>
+            <a href="/categories/others/" class="nav-item active">Others</a>
+        </div>
+    </nav>
+
+    <div class="main-wrapper">
+        <div class="main-content">
+  
+            
+
+<div class="category-section">
+    <h2 class="category-title"></h2>
+    
+    
+        <p class="empty-message">暂无其他文章。</p>
+    
+</div>
+
+<style>
+    /* 分类标题样式 */
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-top: 0; 
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 5px;
+    }
+    
+    .empty-message {
+        color: var(--text-color-light);
+        padding: 10px 0;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+</style>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+          
+            <p class="profile-bio">CCB</p>
+            </div>
+
+            <div class="card quote-card" 
+                 id="quoteCard" 
+                 onclick="changeQuote()"
+                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;,&#34;&#34;]'> 
+                <p id="randomQuoteText" 
+                   style="margin: 0;
+                font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    
+                </p>
+            </div>
+            </aside>
+    </div>
+
+    <script>
+        // 1. 延迟加载 allQuotes 数组，初始化为 null
+        let allQuotes = null; 
+
+        // *** MODIFICATION 2: 修改格式化函数，将 # 替换为 <br>，而不是空格 ***
+        function formatQuote(quote) {
+            // 将 # 替换为 HTML 换行符 <br>
+            return quote.replace(/#/g, '<br>');
+        }
+        
+        // 3. 切换引言的主函数
+        function changeQuote() {
+            var quoteElement = document.getElementById('randomQuoteText');
+            var cardElement = document.getElementById('quoteCard'); // 获取父级卡片元素
+            
+            // *** 关键修改：延迟加载数据，确保函数定义不会因 JSON 错误而中断 ***
+            if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
+                try {
+                    // 第一次点击时，从 HTML data-quotes 属性中安全读取并解析 JSON
+                    allQuotes = JSON.parse(cardElement.dataset.quotes);
+                } catch (e) {
+                    console.error("Quotes data parsing failed:", e);
+                    // 解析失败时，设置为空数组，以触发数据错误提示
+                    allQuotes = []; 
+                }
+            }
+
+            if (!allQuotes || allQuotes.length === 0) 
+            {
+                // 如果数据错误或解析失败
+                quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
+                return;
+            }
+
+            var newIndex;
+            var newQuote;
+            var maxAttempts = 5;
+            var attempts = 0;
+            
+            // 尝试获取当前显示的引言文本（需要先移除 <br> 标签和多余空格）
+            var currentHTML = quoteElement.innerHTML;
+            // 移除 <br> 标签，并用空格替换
+            var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
+            
+            // 循环选择一个新的引言，并尽量避免与当前引言重复
+            do {
+                newIndex = Math.floor(Math.random() * allQuotes.length);
+                newQuote = allQuotes[newIndex];
+                attempts++;
+            } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
+            
+            // 格式化并更新页面
+            quoteElement.innerHTML = formatQuote(newQuote);
+        }
+    </script>
+    
+</body>
+</html>
