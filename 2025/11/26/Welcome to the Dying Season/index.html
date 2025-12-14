@@ -12,13 +12,10 @@
             --primary-light: #3700B3;
             --text-color: rgba(255, 255, 255, 0.87);
             --text-color-light: rgba(255, 255, 255, 0.6);
-            /* REVERTED: 背景色还原 */
-            --background-color: #121212; 
-            
-            /* MODIFICATION: 更深的颜色，更高的透明度 */
-            --surface-color-transparent: rgba(16, 16, 16, 0.7); /* 更深、更透明的标题栏/半透明表面 */
-            --surface-color: rgba(16, 16, 16, 0.8); /* 更深、半透明的卡片背景 */
-            --border-color: #181818; /* 更深的边框色 */
+            --background-color: #121212;
+            --surface-color-transparent: rgba(33, 33, 33, 0.9);
+            --surface-color: #1E1E1E;
+            --border-color: #333333;
             --shadow-1: none;
             --shadow-2: none;
 
@@ -55,10 +52,11 @@
             z-index: -1;
             /* 确保在所有内容之下 */
             
-            /* REVERTED: 变暗效果还原为原始 0.6 透明度 */
+            /* 变暗效果：黑色半透明蒙层 */
             background-color: rgba(0, 0, 0, 0.6);
+            /* 60% 透明度的黑色蒙层 */
             
-            /* REVERTED: 模糊效果还原为原始 5px */
+            /* 模糊效果 */
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
         }
@@ -254,7 +252,7 @@
         </div>
     </nav>
 
-    <div class="main-wrapper">
+    <div class="main-wrapper" id="pjax-container">
         <div class="main-content">
   
             <style>
@@ -342,45 +340,123 @@
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    死にたかった 死ななくてよかった
+                    
                 </p>
             </div>
             </aside>
     </div>
+<script src="/js/pjax.min.js"></script>
 
     <script>
+        // ----------------------------------------------------
+        // Pjax 初始化函数
+        // ----------------------------------------------------
+        function initPjax() {
+            console.log("Pjax is initializing...");
+            var pjax = new Pjax({
+                // 监听所有非外部链接
+                elements: 'a:not([target="_blank"])', 
+                // 指定要替换的元素
+                selectors: [
+                    'title',
+                    '#pjax-container' // 替换主要内容区域
+                ]
+            });
+        }
+        
+        // ----------------------------------------------------
+        // 【新增函数】动态更新导航栏的 active 状态
+        // ----------------------------------------------------
+        function updateNavClasses() {
+            // 1. 获取当前 URL 路径，并清理掉 index.html 和末尾斜杠，方便比较
+            const currentPath = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
+
+            // 2. 清除所有链接的 active 状态
+            document.querySelectorAll('.nav-links-wrapper .nav-item').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // 3. 确定应该激活哪个链接的 href
+            let activeHref = '/'; // 默认激活 ALL
+
+            // 检查当前路径是否属于 Criticism 分类
+            if (currentPath.startsWith('/categories/Criticism')) {
+                activeHref = '/categories/Criticism/';
+            // 检查当前路径是否属于 Others 分类
+            } else if (currentPath.startsWith('/categories/others')) {
+                activeHref = '/categories/others/';
+            } else {
+                // 如果路径是根目录 ('/' 或 '') 或其他不匹配分类的页面，则激活 ALL
+                activeHref = '/';
+            }
+
+            // 4. 应用 active class
+            const activeLink = document.querySelector(`.nav-links-wrapper a[href='${activeHref}']`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+            
+        // ----------------------------------------------------
+        // Pjax 回调函数 (在内容切换完成后运行)
+        // ----------------------------------------------------
+        function afterPjaxLoad() {
+            console.log("Pjax content loaded. Re-initializing scripts...");
+            
+            // 1. 关键修复：更新导航栏状态
+            updateNavClasses(); 
+            
+            // 2. Live2D 模型硬重载逻辑
+            if (typeof OML2D !== 'undefined' && typeof OML2D.initialize === 'function') {
+                const oldStage = document.querySelector('.oml2d-stage'); 
+                if (oldStage) {
+                    oldStage.remove(); 
+                    console.log("Removed old Live2D stage.");
+                } else if (typeof OML2D.destroy === 'function') {
+                    OML2D.destroy();
+                }
+                
+                OML2D.initialize();
+                console.log("Live2D re-initialized.");
+            } 
+            
+            // 3. 重新运行其他脚本（例如代码高亮、数学公式渲染等）
+            // ...
+        }
+
+        // 监听 Pjax 完成事件，在新页面加载后重新初始化脚本
+        document.addEventListener('pjax:complete', afterPjaxLoad);
+        document.addEventListener('pjax:success', afterPjaxLoad);
+
+        // 首次加载和 Pjax 初始化 - 使用 window.onload 确保所有资源都已加载
+        window.onload = initPjax; 
+
+        // ----------------------------------------------------
+        // 您的引言切换脚本 (保持不变)
+        // ----------------------------------------------------
+        
         // 1. 延迟加载 allQuotes 数组，初始化为 null
         let allQuotes = null; 
 
-
-        // *** MODIFICATION 2: 修改格式化函数，将 # 替换为 <br>，而不是空格 ***
         function formatQuote(quote) {
-            // 将 # 替换为 HTML 换行符 <br>
             return quote.replace(/#/g, '<br>');
         }
         
-        // 3. 切换引言的主函数
         function changeQuote() {
-      
             var quoteElement = document.getElementById('randomQuoteText');
-            var cardElement = document.getElementById('quoteCard'); // 获取父级卡片元素
+            var cardElement = document.getElementById('quoteCard'); 
             
-            // *** 关键修改：延迟加载数据，确保函数定义不会因 JSON 错误而中断 ***
             if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
                 try {
-        
-            // 第一次点击时，从 HTML data-quotes 属性中安全读取并解析 JSON
                     allQuotes = JSON.parse(cardElement.dataset.quotes);
                 } catch (e) {
                     console.error("Quotes data parsing failed:", e);
-                    // 解析失败时，设置为空数组，以触发数据错误提示
                     allQuotes = [];
                 }
             }
 
             if (!allQuotes || allQuotes.length === 0) 
             {
-                // 如果数据错误或解析失败
                 quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
                 return;
             }
@@ -390,29 +466,18 @@
             var maxAttempts = 5;
             var attempts = 0;
             
-            // 尝试获取当前显示的引言文本（需要先移除 <br> 标签和多余空格）
             var currentHTML = quoteElement.innerHTML;
-            // 移除 <br> 标签，并用空格替换
             var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
-            // 循环选择一个新的引言，并尽量避免与当前引言重复
+
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);
                 newQuote = allQuotes[newIndex];
                 attempts++;
             } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
-            // 格式化并更新页面
+
             quoteElement.innerHTML = formatQuote(newQuote);
         }
     </script>
     
-<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-10,35],"scale":0.15,"stageStyle":{"width":250,"height":250}}],parentElement:document.body,primaryColor:"var(--btn-bg)",sayHello:false,tips:{style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:function(){
-  return axios.get('https://v1.hitokoto.cn?c=i')
-    .then(function (response) {
-      return response.data.hitokoto ;
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-}
-}}});</script><!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-10,35],"scale":0.15,"stageStyle":{"width":250,"height":250}}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}}});</script><!-- hexo injector body_end end --></body>
 </html>
