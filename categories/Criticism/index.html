@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>单行路OWR的博客Beta</title>
    <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
@@ -37,6 +37,9 @@
             background-size: cover;
             background-attachment: fixed;
             background-position: center center;
+
+            /* 【新增：全局溢出重置】防止任何子元素导致页面在水平方向溢出 */
+            overflow-x: hidden;
         }
         
         /* 【新增：背景图片模糊和变暗蒙层】 */
@@ -68,6 +71,11 @@
             padding-top: 60px;
             position: relative; /* 确保内容位于伪元素之上 */
             z-index: 0;
+
+            /* 【新增：确保主要容器不溢出】 */
+            overflow-x: hidden;
+            width: 100%; /* 确保它们占据整个可用宽度 */
+            box-sizing: border-box; /* 确保 padding/border 不会增加总宽度 */
         }
 
         /* 固定标题栏 - 始终位于屏幕上方 */
@@ -83,13 +91,23 @@
             z-index: 150;
             border-bottom: 1px solid var(--border-color);
             box-sizing: border-box;
+            /* 【新增/修改】使用 Flexbox 确保内容在其内部是居中的 */
+            display: flex;
+            justify-content: center; /* 确保标题容器在全宽条中居中 */
+            align-items: center;
         }
         
         /* 标题居中容器 */
         .title-container {
             max-width: 1200px;
-            margin: 0 auto;
             padding: 0 10px;
+            box-sizing: border-box; 
+    
+            /* 确保它只占据必要的宽度 */
+            width: 100%; 
+            
+            /* 【新增/修改】让标题文字在容器内居中 */
+            text-align: center;
         }
 
         .site-title {
@@ -159,6 +177,11 @@
             margin: 0 auto; 
             padding: 20px 20px;
             flex-grow: 1;
+
+            /* 【新增：确保主要容器不溢出】 */
+            overflow-x: hidden;
+            width: 100%; /* 确保它们占据整个可用宽度 */
+            box-sizing: border-box; /* 确保 padding/border 不会增加总宽度 */
         }
 
         /* 主内容区域 */
@@ -166,6 +189,10 @@
             flex-grow: 1;
             width: 100%;
             min-width: 0;
+            /* 【新增：确保主要容器不溢出】 */
+            overflow-x: hidden;
+            width: 100%; /* 确保它们占据整个可用宽度 */
+            box-sizing: border-box; /* 确保 padding/border 不会增加总宽度 */
         }
 
         /* 侧边栏样式 */
@@ -558,7 +585,7 @@
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    我们不要一个被科学游戏污染的天空<br>我们不要一个被现实生活超越的时空
+                    Death seed, blind man's greed<br>Poets' starving, children bleed<br>Nothing he's got he really needs<br>Twenty-first century schizoid man
                 </p>
             </div>
             </aside>
@@ -702,5 +729,5 @@
         }
     </script>
     
-<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[10,0],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":null}});</script><!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,400],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
 </html>
