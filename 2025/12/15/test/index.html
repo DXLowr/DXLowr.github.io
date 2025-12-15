@@ -273,172 +273,126 @@
         
         <div class="nav-links-wrapper">
             <a href="/" class="nav-item ">ALL</a>
-            <a href="/categories/Criticism/" class="nav-item ">Criticism</a>
-            <a href="/categories/others/" class="nav-item active">Others</a>
+            <a href="/criticism/" class="nav-item ">Criticism</a>
+            <a href="/others/" class="nav-item ">Others</a>
         </div>
     </nav>
 
     <div class="main-wrapper" id="pjax-container">
         <div class="main-content">
   
-            
-
-<div class="category-section">
-    <h2 class="category-title"></h2>
-    
-    
-        <style>
-    /* 列表容器 */
-    .post-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    /* 单个文章卡片样式 */
-    .post-list-item {
-        margin-bottom: 16px;
-    }
-
-    /* 链接和卡片内容区域 */
-    .post-card {
-        display: flex;
+            <style>
+    /* 文章容器卡片 */
+    .article-container {
         background-color: var(--surface-color-transparent); /* 深色卡片背景 */
-        padding: 16px;
+        padding: 30px;
         border-radius: 4px;
-        border: 1px solid var(--border-color);
-        box-shadow: none;
-        transition: border-color 0.3s, background-color 0.3s, transform 0.3s;
-        overflow: hidden;
-    }
-
-    /* 鼠标悬停和聚焦时的效果 - 强调边框和背景 */
-    .post-card:hover, .post-card:focus {
-        box-shadow: none;
-        border-color: var(--primary-color);
-        background-color: #282828;
-        transform: translateY(-2px);
-    }
-
-    /* 卡片左侧内容 (文字信息区域) */
-    .card-content {
-        flex-grow: 1;
-        padding-right: 16px; 
-        
-        /* 保持左侧垂直分隔线 */
-        border-left: 1px solid var(--border-color);
-        padding-left: 16px;
-    }
-
-    /* 【新增 CSS 类】无缩略图时的内容样式 */
-    .no-thumbnail-content {
-        border-left: none;  /* 移除分隔线 */
-        padding-left: 0;    /* 移除左侧内边距 */
+        border: 1px solid var(--border-color); /* 增加边框强调线条感 */
     }
 
     /* 文章标题 */
-    .post-title {
-        font-size: 1.2rem;
-        font-weight: 500;
-        color: var(--text-color);
-        margin: 0 0 4px 0;
-    }
-    
-    /* 文章日期样式 */
-    .post-date {
-        font-size: 0.85rem;
-        color: var(--text-color-light);
-        margin: 0 0 8px 0;
-    }
-    
-    /* 文章预览（摘录）样式 */
-    .post-excerpt {
-        font-size: 0.95rem;
-        color: var(--text-color-light);
-        margin: 0;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        line-height: 1.4;
-        max-height: 2.8em;
+    .article-title {
+        font-size: 2rem; 
+        font-weight: 700; 
+        color: var(--text-color); /* 浅色文本 */
+        margin-top: 0;
+        margin-bottom: 10px; 
     }
 
-    /* 文章缩略图 */
-    .post-thumbnail {
-        width: 120px;
-        height: 120px;
-        object-fit: cover; /* 裁剪图片以适应容器 */
+    /* 文章元数据（日期） */
+    .article-meta {
+        color: var(--text-color-light); /* 次要文本 */
+        font-size: 0.9rem; 
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color); /* 保持边框作为分割线 */
+        padding-bottom: 10px; 
+    }
+
+    /* 内容区域图片 */
+    .article-image {
+        max-width: 100%; 
+        height: auto; 
+        display: block;
+        margin: 0 auto 20px;
         border-radius: 4px;
-        flex-shrink: 0;
-        border: 1px solid var(--border-color); /* 保持图片边框 */
-        margin-right: 16px;
+        border: 1px solid var(--border-color); /* 增加图片边框 */
+    }
+
+    /* 主内容区排版优化 */
+    .article-content {
+        font-size: 1rem; 
+        color: var(--text-color); 
+    }
+    .article-content p {
+        margin-bottom: 1em;
+    }
+
+    /* =======================================
+       【常驻隐藏 / 悬停显示功能 CSS】
+       ======================================= */
+    .article-content .censor-text {
+        /* 隐藏状态：纯黑色覆盖 */
+        color: #000000; 
+        background-color: #000000; 
+        
+        font-weight: 700; 
+        
+        /* 动画过渡 */
+        transition: color 0.3s, background-color 0.3s;
+        
+        /* 光标 */
+        cursor: pointer;
+        
+        /* 避免其他干扰 */
+        text-shadow: none; 
+        box-shadow: none;
     }
     
-    @media (max-width: 600px) {
-        /* 在小屏幕上隐藏缩略图 */
-        .post-thumbnail {
-            display: none;
-        }
-        .card-content {
-            /* 移除小屏幕下的左侧边框和内边距 */
-            border-left: none;
-            padding-left: 0;
-            padding-right: 0;
-        }
+    /* 悬停状态：移除覆盖，显示文字 */
+    .article-content .censor-text:hover {
+        /* 【关键修复】：悬停时，强制使用纯白色 */
+        color: #FFFFFF; 
+        background-color: transparent; /* 悬停时，移除背景覆盖 */
     }
+
+    /* =======================================
+       【保留：HTML <ruby> 标签样式】
+       ======================================= */
+    /* Ruby Annotation 容器 */
+    .article-content ruby {
+        line-height: normal;
+        color: var(--text-color);
+    }
+    
+    /* 注音文本（Ruby Text: <rt>） */
+    .article-content rt {
+        font-size: 0.6em;
+        font-weight: 500;
+        color: var(--text-color-light); 
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+
 </style>
 
+<div class="article-container">
+    <h1 class="article-title">test</h1>
 
+    
 
-<ul class="post-list">
+    <div class="article-meta">
+        发布日期: 2025年12月15日 17:39
+    </div>
     
-      <li class="post-list-item">
-        
-        <a href="/2025/12/15/%E7%A2%8E%E7%A2%8E%E5%BF%B51/" class="post-card">
-        
-            
-     
-        
-            <div class="card-content no-thumbnail-content"> 
-                <h2 class="post-title">碎碎念1</h2>
-                <p class="post-date">2025年12月15日</p>
-                
-                
-                
-                <p class="post-excerpt">四级前和高数考试前都在干些什么，总之没有学习，但是也给我玩上微软大战代码了，虽然全用的插件
-blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是真得学了没时间做了
-做出来本来想写点隐私暴露成分...</p> 
-                
-            </div>
-        </a>
-      </li>
     
-</ul>
+    <img class="article-image" src="/images/test.jpg" alt="test">
+    
+    
+    <div class="article-content">
+        
+    </div>
     
 </div>
-
-<style>
-    /* 分类标题样式 */
-    .category-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-top: 0; 
-        margin-bottom: 15px;
-        border-bottom: 2px solid var(--border-color);
-        padding-bottom: 5px;
-    }
-    
-    .empty-message {
-        color: var(--text-color-light);
-        padding: 10px 0;
-        text-align: center;
-        border: 1px dashed var(--border-color);
-        border-radius: 4px;
-        margin-bottom: 20px;
-    }
-</style>
         </div>
         
         <aside class="sidebar">
@@ -456,7 +410,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    曲终人不见 江上数峰青
+                    The daybreak is your midnight<br>The colours have all died
                 </p>
             </div>
         </aside>
@@ -485,7 +439,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         // ----------------------------------------------------
         function updateNavClasses() {
             // 1. 获取当前 URL 路径，并清理掉 index.html 和末尾斜杠
-            // 例如：/ 或 /categories/Criticism 或 /2024/01/01/post-title
+            // 例如：/ 或 /categories/criticism 或 /2024/01/01/post-title
             const currentPath = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '');
 
             // 2. 清除所有链接的 active 状态 (必须先清除)
@@ -496,12 +450,12 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
             // 3. 确定应该激活哪个链接的 href
             let activeHref = null; // 默认不激活任何链接
 
-            // 检查当前路径是否属于 Criticism 分类 (例如: /categories/Criticism)
-            if (currentPath.startsWith('/categories/Criticism')) {
-                activeHref = '/categories/Criticism/';
-            // 检查当前路径是否属于 Others 分类 (例如: /categories/others)
-            } else if (currentPath.startsWith('/categories/others')) {
-                activeHref = '/categories/others/';
+            // 检查当前路径是否属于 Criticism 分类 (例如: /criticism)
+            if (currentPath.startsWith('/criticism')) {
+                activeHref = '/criticism/';
+            // 检查当前路径是否属于 Others 分类 (例如: /others)
+            } else if (currentPath.startsWith('/others')) {
+                activeHref = '/others/';
             // 检查当前路径是否是首页 (例如: / 或 '')
             } else if (currentPath === '' || currentPath === '/') {
                 activeHref = '/'; // ALL 的 href
@@ -600,5 +554,5 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         }
     </script>
     
-<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,400],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,425],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
 </html>
