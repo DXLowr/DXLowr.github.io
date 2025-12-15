@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>单行路OWR的博客Beta</title>
+    <title>单行路OWR的博客</title>
    <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
@@ -107,7 +107,7 @@
             width: 100%; 
             
             /* 【新增/修改】让标题文字在容器内居中 */
-            text-align: center;
+            text-align: center; 
         }
 
         .site-title {
@@ -265,7 +265,7 @@
 <body class="page-container">
     <div class="fixed-title-bar">
         <div class="title-container">
-            <div class="site-title">单行路OWR的博客Beta</div>
+            <div class="site-title">单行路OWR的博客</div>
         </div>
     </div>
 
@@ -304,7 +304,7 @@
     /* 链接和卡片内容区域 */
     .post-card {
         display: flex;
-        background-color: var(--surface-color); /* 深色卡片背景 */
+        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
         padding: 16px;
         border-radius: 4px;
         border: 1px solid var(--border-color);
@@ -396,19 +396,20 @@
     
       <li class="post-list-item">
         
-        <a href="/2025/12/15/test/" class="post-card">
+        <a href="/2025/12/15/%E7%A2%8E%E7%A2%8E%E5%BF%B51/" class="post-card">
         
             
      
         
             <div class="card-content no-thumbnail-content"> 
-                <h2 class="post-title">test</h2>
+                <h2 class="post-title">碎碎念1</h2>
                 <p class="post-date">2025年12月15日</p>
                 
                 
                 
-                <p class="post-excerpt">111
-</p> 
+                <p class="post-excerpt">四级前和高数考试前都在干些什么，总之没有学习，但是也给我玩上微软大战代码了，虽然全用的插件
+blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是真得学了没时间做了
+做出来本来想写点隐私暴露成分...</p> 
                 
             </div>
         </a>
@@ -594,21 +595,21 @@
             <div class="card" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
-                <p class="profile-bio">test</p>
+                <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
             </div>
 
             <div class="card quote-card" 
                  id="quoteCard" 
                  onclick="changeQuote()"
-                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;]'> 
+                 data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
      
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    だって人生が長すぎる<br>「ムズイよ」
+                    曲终人不见 江上数峰青
                 </p>
             </div>
-            </aside>
+        </aside>
     </div>
 <script src="/js/pjax.min.js"></script>
 
@@ -709,7 +710,7 @@
         let allQuotes = null; 
 
         function formatQuote(quote) {
-            return quote.replace(/#/g, '<br>');
+            return quote;
         }
         
         function changeQuote() {
@@ -737,7 +738,7 @@
             var attempts = 0;
             
             var currentHTML = quoteElement.innerHTML;
-            var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
+            var currentText = currentHTML.trim().replace(/\s+/g, ' ');
 
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);

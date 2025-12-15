@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>单行路OWR的博客Beta</title>
+    <title>单行路OWR的博客</title>
    <style>
         /* CSS 变量定义颜色，改为深色线条感风格 */
         :root {
@@ -107,7 +107,7 @@
             width: 100%; 
             
             /* 【新增/修改】让标题文字在容器内居中 */
-            text-align: center;
+            text-align: center; 
         }
 
         .site-title {
@@ -265,7 +265,7 @@
 <body class="page-container">
     <div class="fixed-title-bar">
         <div class="title-container">
-            <div class="site-title">单行路OWR的博客Beta</div>
+            <div class="site-title">单行路OWR的博客</div>
         </div>
     </div>
 
@@ -284,27 +284,27 @@
             <style>
     /* 文章容器卡片 */
     .article-container {
-        background-color: var(--surface-color);
+        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
         padding: 30px;
         border-radius: 4px;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-color); /* 增加边框强调线条感 */
     }
 
     /* 文章标题 */
     .article-title {
-        font-size: 2rem;
+        font-size: 2rem; 
         font-weight: 700; 
-        color: var(--text-color); 
+        color: var(--text-color); /* 浅色文本 */
         margin-top: 0;
-        margin-bottom: 10px;
+        margin-bottom: 10px; 
     }
 
     /* 文章元数据（日期） */
     .article-meta {
-        color: var(--text-color-light);
+        color: var(--text-color-light); /* 次要文本 */
         font-size: 0.9rem; 
         margin-bottom: 20px;
-        border-bottom: 1px solid var(--border-color); 
+        border-bottom: 1px solid var(--border-color); /* 保持边框作为分割线 */
         padding-bottom: 10px; 
     }
 
@@ -315,7 +315,7 @@
         display: block;
         margin: 0 auto 20px;
         border-radius: 4px;
-        border: 1px solid var(--border-color); 
+        border: 1px solid var(--border-color); /* 增加图片边框 */
     }
 
     /* 主内容区排版优化 */
@@ -327,10 +327,56 @@
         margin-bottom: 1em;
     }
 
+    /* =======================================
+       【常驻隐藏 / 悬停显示功能 CSS】
+       ======================================= */
+    .article-content .censor-text {
+        /* 隐藏状态：纯黑色覆盖 */
+        color: #000000; 
+        background-color: #000000; 
+        
+        font-weight: 700; 
+        
+        /* 动画过渡 */
+        transition: color 0.3s, background-color 0.3s;
+        
+        /* 光标 */
+        cursor: pointer;
+        
+        /* 避免其他干扰 */
+        text-shadow: none; 
+        box-shadow: none;
+    }
+    
+    /* 悬停状态：移除覆盖，显示文字 */
+    .article-content .censor-text:hover {
+        /* 【关键修复】：悬停时，强制使用纯白色 */
+        color: #FFFFFF; 
+        background-color: transparent; /* 悬停时，移除背景覆盖 */
+    }
+
+    /* =======================================
+       【保留：HTML <ruby> 标签样式】
+       ======================================= */
+    /* Ruby Annotation 容器 */
+    .article-content ruby {
+        line-height: normal;
+        color: var(--text-color);
+    }
+    
+    /* 注音文本（Ruby Text: <rt>） */
+    .article-content rt {
+        font-size: 0.6em;
+        font-weight: 500;
+        color: var(--text-color-light); 
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+
 </style>
 
 <div class="article-container">
-    <h1 class="article-title">test</h1>
+    <h1 class="article-title">碎碎念1</h1>
 
     
 
@@ -341,7 +387,15 @@
     
     
     <div class="article-content">
-        <p>111</p>
+        <p>四级前和高数考试前都在干些什么，总之没有学习，但是也给我玩上微软大战代码了，虽然全用的插件</p>
+<p>blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是真得学了没时间做了</p>
+<p>做出来本来想写点<ruby>隐私<rt><span class="censor-text">暴露成分</span></rt></ruby>的东西，但是显然我现实里还是太普通了，成分暴露太多过于weihe也就写点敏感的东西吧，反正没人看，《首都》先安排上😄</p>
+<p>好想发文青病啊，但是我并不文艺，令人感叹</p>
+<p>原计划在圣诞节前要<ruby>写评<rt>推荐</rt></ruby>的华语专辑还有四张，居然是期中考试……</p>
+<p>然后是圣诞节特辑和听歌历史，接着有可能发游戏的动画片的OST，大概就不会评分了</p>
+<p>依旧零社交，依旧开摆，但是这积分是一点不会了啊😰</p>
+<p>年底了好忙，一堆ddl，游戏都没怎么玩了，但是想学贝斯想学日语想学画画想想想</p>
+<p>十八年xyy的结果……</p>
 
     </div>
     
@@ -352,13 +406,13 @@
             <div class="card" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
-                <p class="profile-bio">test</p>
+                <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
             </div>
 
             <div class="card quote-card" 
                  id="quoteCard" 
                  onclick="changeQuote()"
-                 data-quotes='[&#34;だって人生が長すぎる#「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋#石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空#我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路#但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する#そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日#火星探査成功した日#いつかオールトの曇も見つけ#外を知るだろう#それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight#The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火#瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed#Poets&#39; starving, children bleed#Nothing he&#39;s got he really needs#Twenty-first century schizoid man&#34;]'> 
+                 data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
      
            <p id="randomQuoteText" 
                    style="margin: 0;
@@ -366,7 +420,7 @@
                     Death seed, blind man's greed<br>Poets' starving, children bleed<br>Nothing he's got he really needs<br>Twenty-first century schizoid man
                 </p>
             </div>
-            </aside>
+        </aside>
     </div>
 <script src="/js/pjax.min.js"></script>
 
@@ -467,7 +521,7 @@
         let allQuotes = null; 
 
         function formatQuote(quote) {
-            return quote.replace(/#/g, '<br>');
+            return quote;
         }
         
         function changeQuote() {
@@ -495,7 +549,7 @@
             var attempts = 0;
             
             var currentHTML = quoteElement.innerHTML;
-            var currentText = currentHTML.replace(/<br\s*\/?>/gi, ' ').trim().replace(/\s+/g, ' ');
+            var currentText = currentHTML.trim().replace(/\s+/g, ' ');
 
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);
