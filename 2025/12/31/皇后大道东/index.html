@@ -375,16 +375,12 @@
         <div class="main-content">
   
             <style>
-    /* 文章容器卡片 —— 液态玻璃 */
+    /* 文章容器卡片 */
     .article-container {
-        background: var(--glass-bg);
-        backdrop-filter: blur(12px) saturate(150%);
-        -webkit-backdrop-filter: blur(12px) saturate(150%);
-        padding: 32px;
-        border-radius: 12px;
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow);
-        transition: box-shadow 0.3s;
+        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
+        padding: 30px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color); /* 增加边框强调线条感 */
     }
 
     /* 文章标题 */
@@ -398,12 +394,21 @@
 
     /* 文章元数据（日期） */
     .article-meta {
-        color: var(--text-color-light);
+        color: var(--text-color-light); /* 次要文本 */
         font-size: 0.9rem; 
-        margin-bottom: 24px;
-        border-bottom: 1px solid var(--border-color-strong);
-        padding-bottom: 12px;
-        letter-spacing: 0.02em;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color); /* 保持边框作为分割线 */
+        padding-bottom: 10px; 
+    }
+
+    /* 内容区域图片 */
+    .article-image {
+        max-width: 100%; 
+        height: auto; 
+        display: block;
+        margin: 0 auto 20px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color); /* 增加图片边框 */
     }
 
     /* 主内容区排版优化 */
@@ -415,34 +420,32 @@
         margin-bottom: 1em;
     }
 
-    /* 正文内 Markdown 插入的图片 */
-    .article-content img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-        margin: 1.4em auto;
-        border-radius: 10px;
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--glass-shadow);
-    }
-
     /* =======================================
        【常驻隐藏 / 悬停显示功能 CSS】
        ======================================= */
     .article-content .censor-text {
-        color: #ffffff;
-        background-color: #ffffff;
-        font-weight: 700;
+        /* 隐藏状态：纯黑色覆盖 */
+        color: #000000; 
+        background-color: #000000; 
+        
+        font-weight: 700; 
+        
+        /* 动画过渡 */
         transition: color 0.3s, background-color 0.3s;
+        
+        /* 光标 */
         cursor: pointer;
-        text-shadow: none;
+        
+        /* 避免其他干扰 */
+        text-shadow: none; 
         box-shadow: none;
     }
     
     /* 悬停状态：移除覆盖，显示文字 */
     .article-content .censor-text:hover {
-        color: var(--text-color);
-        background-color: transparent;
+        /* 【关键修复】：悬停时，强制使用纯白色 */
+        color: #FFFFFF; 
+        background-color: transparent; /* 悬停时，移除背景覆盖 */
     }
 
     /* =======================================
@@ -468,9 +471,15 @@
 <div class="article-container">
     <h1 class="article-title">皇后大道东</h1>
 
+    
+
     <div class="article-meta">
         发布日期: 2025年12月31日 11:28
     </div>
+    
+    
+    <img class="article-image" src="/images/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C.jpg" alt="皇后大道东">
+    
     
     <div class="article-content">
         <p><img src="/images/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C.jpg"><br>6.4&#x2F;10</p>
@@ -505,7 +514,7 @@
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    Why did He lose six million Jews?
+                    この宇宙を構成する<br>そのひとつを誇りたい
                 </p>
             </div>
         </aside>
