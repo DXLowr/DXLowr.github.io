@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>单行路OWR的博客</title>
+   <style>
+        /* ==========================================
+           CSS 变量 —— 白色底 + 液态玻璃层次风格
+           ========================================== */
+        /* 默认：暗色主题 */
+        :root {
+            --primary-color: #b0b0b0;
+            --accent-1: #5a4070;
+            --accent-2: #3a5570;
+            --accent-3: #705a40;
+            --text-color: #e0e0e0;
+            --text-color-light: #999999;
+            --background-color: #1a1a1a;
+            --glass-bg: rgba(28, 28, 32, 0.72);
+            --glass-bg-strong: rgba(28, 28, 32, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.35);
+            --border-color: #333333;
+            --border-color-strong: #555555;
+            --hover-bg: rgba(255, 255, 255, 0.04);
+            --blob-opacity: 0.28;
+        }
+
+        /* 亮色主题 */
+        [data-theme="light"] {
+            --primary-color: #4a4a4a;
+            --accent-1: #c4b5e0;
+            --accent-2: #b5d0e0;
+            --accent-3: #e0d4c4;
+            --text-color: #2c2c2c;
+            --text-color-light: #777777;
+            --background-color: #f8f8f8;
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-bg-strong: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.10);
+            --border-color: #e8e8e8;
+            --border-color-strong: #d4d4d4;
+            --hover-bg: rgba(0, 0, 0, 0.03);
+            --blob-opacity: 0.45;
+        }
+
+        /* ---- 动效色块背景 ---- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景色块层 */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: var(--blob-opacity);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+
+        .bg-blob-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-1);
+            top: -10%;
+            left: -8%;
+            animation-name: floatBlob1;
+            animation-duration: 18s;
+        }
+
+        .bg-blob-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-2);
+            top: 50%;
+            right: -6%;
+            animation-name: floatBlob2;
+            animation-duration: 22s;
+        }
+
+        .bg-blob-3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent-3);
+            bottom: -8%;
+            left: 30%;
+            animation-name: floatBlob3;
+            animation-duration: 20s;
+        }
+
+        .bg-blob-4 {
+            width: 280px;
+            height: 280px;
+            background: var(--accent-1);
+            top: 30%;
+            left: 50%;
+            animation-name: floatBlob4;
+            animation-duration: 24s;
+            opacity: 0.30;
+        }
+
+        @keyframes floatBlob1 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.15); }
+        }
+        @keyframes floatBlob2 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-50px, -60px) scale(1.10); }
+        }
+        @keyframes floatBlob3 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -50px) scale(1.12); }
+        }
+        @keyframes floatBlob4 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 40px) scale(1.08); }
+        }
+
+        /* ---- 页面容器 ---- */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px;
+            overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---- 固定标题栏（液态玻璃） ---- */
+        .fixed-title-bar {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            width: 100%;
+            padding: 14px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 150;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .theme-toggle {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--hover-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            width: 54px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-color-strong);
+            transform: translateY(-50%) scale(1.06);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(-50%) scale(0.94);
+        }
+
+        /* 滑动高亮块 */
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--glass-bg-strong);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        [data-theme="light"] .theme-toggle::after {
+            transform: translateX(24px);
+        }
+
+        .theme-icon {
+            position: relative;
+            z-index: 1;
+            width: 27px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            line-height: 1;
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* 暗色主题默认：月亮高亮（由 JS 初始化时设置内联样式） */
+        .theme-icon-moon {
+            opacity: 1;
+            transform: scale(1.12);
+        }
+        .theme-icon-sun {
+            opacity: 0.35;
+            transform: scale(0.88);
+        }
+
+        .title-container {
+            max-width: 1200px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: center;
+            margin: 0;
+            letter-spacing: 0.04em;
+        }
+
+        .site-title a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .site-title a:hover {
+            opacity: 0.6;
+            text-decoration: none;
+        }
+
+        /* ---- 双栏主布局 ---- */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            flex-grow: 1;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            width: 300px;
+            margin-left: 24px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10000;
+        }
+
+        /* ---- 卡片基础样式（液态玻璃） ---- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 18px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: var(--glass-shadow-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ---- 链接 ---- */
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        a:hover {
+            opacity: 0.6;
+            text-decoration: none;
+        }
+
+        /* ---- 媒体查询 ---- */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 16px 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1;
+            }
+        }
+
+        /* ---- 引言卡片 ---- */
+        .quote-card {
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .quote-card p {
+            width: 100%;
+            line-height: 1.8;
+            word-wrap: break-word;
+        }
+    </style>
+    
+   
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body class="page-container">
+    <div class="bg-blobs">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+        <div class="bg-blob bg-blob-3"></div>
+        <div class="bg-blob bg-blob-4"></div>
+    </div>
+    <div class="fixed-title-bar">
+        <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换主题">
+            <span class="theme-icon theme-icon-sun">☀️</span>
+            <span class="theme-icon theme-icon-moon">🌙</span>
+        </button>
+        <div class="title-container">
+            <div class="site-title"><a href="/">单行路OWR的博客</a></div>
+        </div>
+    </div>
+
+    <div class="main-wrapper" id="pjax-container">
+        <div class="main-content">
+  
+            <style>
+    /* 文章容器卡片 —— 液态玻璃 */
+    .article-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px) saturate(150%);
+        -webkit-backdrop-filter: blur(12px) saturate(150%);
+        padding: 32px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        transition: box-shadow 0.3s;
+    }
+
+    /* 文章标题 */
+    .article-title {
+        font-size: 2rem; 
+        font-weight: 700; 
+        color: var(--text-color); /* 浅色文本 */
+        margin-top: 0;
+        margin-bottom: 10px; 
+    }
+
+    /* 文章元数据（日期） */
+    .article-meta {
+        color: var(--text-color-light);
+        font-size: 0.9rem; 
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--border-color-strong);
+        padding-bottom: 12px;
+        letter-spacing: 0.02em;
+    }
+
+    /* 主内容区排版优化 */
+    .article-content {
+        font-size: 1rem; 
+        color: var(--text-color); 
+    }
+    .article-content p {
+        margin-bottom: 1em;
+    }
+
+    /* 正文内 Markdown 插入的图片 */
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 1.4em auto;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    /* =======================================
+       【常驻隐藏 / 悬停显示功能 CSS】
+       ======================================= */
+    .article-content .censor-text {
+        color: #ffffff;
+        background-color: #ffffff;
+        font-weight: 700;
+        transition: color 0.3s, background-color 0.3s;
+        cursor: pointer;
+        text-shadow: none;
+        box-shadow: none;
+    }
+    
+    /* 悬停状态：移除覆盖，显示文字 */
+    .article-content .censor-text:hover {
+        color: var(--text-color);
+        background-color: transparent;
+    }
+
+    /* =======================================
+       【保留：HTML <ruby> 标签样式】
+       ======================================= */
+    /* Ruby Annotation 容器 */
+    .article-content ruby {
+        line-height: normal;
+        color: var(--text-color);
+    }
+    
+    /* 注音文本（Ruby Text: <rt>） */
+    .article-content rt {
+        font-size: 0.6em;
+        font-weight: 500;
+        color: var(--text-color-light); 
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+
+</style>
+
+<div class="article-container">
+    <h1 class="article-title">Welcome to the Dying Season</h1>
+
+    <div class="article-meta">
+        发布日期: 2025年11月26日 20:42
+    </div>
+    
+    <div class="article-content">
+        <p><img src="/images/Welcome%20to%20the%20Dying%20Season.jpg"><br>7.6&#x2F;10<br>やなぎなぎ的红烧天堂二专，今日刚发售<br>虽然基本都是老曲但是给我听爽了加急插队来写评价<br>不同于之前发的摇滚&#x2F;泛摇滚，这张是很典的流行乐专辑，可以说是单曲合辑，当然前面发的两个专也是这样，但是说的话又要扣分了，对纯流行乐放宽点评价<br>和SiL的歌一样，同样作为红烧天堂的游戏配乐，麻子词曲这块还是很稳的<br>没有烂曲，最次也至少是能听<br>专辑名很明显融合了所收录的两首歌的歌名：「死にゆく季節のきみへ」「Welcome to the Front Line!」，还是游戏主基调，最上の、切なさを<br>「死にゆく季節のきみへ」当prologue真的是神来之笔，开头的键盘一响浑身鸡皮疙瘩了，主歌较为欢快的风格，歌词也是情歌，但是看标题就知道不是什么轻松的故事，最后“きみだけに”的复读情感爆发很到位<br>「ワルキューレの叙事詩」可以说是十三年前麻子和なぎ的合作专辑「終わりの惑星の Love Song」的精神续作，如标题所言，是叙事うた(雾)，编曲少了些同人味，なぎ的唱法也有些改变，但是歌词还是那个味<br>「Asian Soul」是一首略显特殊的歌曲，貌似是麻子关于泡沫经济时期日本所做(?)，但是歌词的确能有共感，毕竟标题是亚洲。“経済の中心地になり果てても Asian Soul この血を誇りに思う”最后的说唱(不是rap的那个，我也不知道专业名词是什么)很洗脑 “行こうぜ この命は一瞬もいいところ”<br>说到洗脑就不得不说「シヴァ」「Welcome to the Front Line!」两首，尤其「Welcome to the Front Line!」是麻子发癫时期所作(雾)，歌词很有意思<br>epilogue「オールトの曇」真的是一首全程很有意思的歌，当初第一次听的时候还无感，但是越听越上头，依旧是叙事情歌，依旧是bad end，作为一首流行乐长达六分二十六秒，结构精巧。主歌情绪很平稳也很短，和导歌长度差不多，导歌部分先是含蓄然后情绪骤变，到了副歌的情绪爆发，副歌的歌词很整齐，不过我还是喜欢第二段主歌“月を目指し旅立った日 火星探査成功した日 いつかオールトの曇も見つけ外を知るだろう それが暮らしさ”。当然我认为最值得一提的是桥段，这段旋律太好听了。到了最后一段副歌的时候歌曲才进行一半多，最后尾歌的歌词也很，拟声词大学习。结束以后歌曲还剩一分钟，是单曲版没有的hidden track，再次想到「終わりの惑星の Love Song」<br>但是有一说一ゆーげん的画风好看但是人体是不是有点怪啊(123456，7890)</p>
+
+    </div>
+    
+</div>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+                <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
+            </div>
+
+            <div class="card quote-card" 
+                 id="quoteCard" 
+                 onclick="changeQuote()"
+                 data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
+     
+           <p id="randomQuoteText" 
+                   style="margin: 0;
+                   font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    この宇宙を構成する<br>そのひとつを誇りたい
+                </p>
+            </div>
+        </aside>
+    </div>
+<script src="/js/pjax.min.js"></script>
+
+    <script>
+        // ----------------------------------------------------
+        // 主题切换
+        // ----------------------------------------------------
+        (function() {
+            var STORAGE_KEY = 'blog-theme';
+            var html = document.documentElement;
+            var toggleBtn = document.getElementById('themeToggle');
+            var sunIcon = document.querySelector('.theme-icon-sun');
+            var moonIcon = document.querySelector('.theme-icon-moon');
+            // 亮色主题 CSS 变量值
+            var LIGHT_VARS = {
+                '--primary-color': '#4a4a4a',
+                '--accent-1': '#c4b5e0',
+                '--accent-2': '#b5d0e0',
+                '--accent-3': '#e0d4c4',
+                '--text-color': '#2c2c2c',
+                '--text-color-light': '#777777',
+                '--background-color': '#f8f8f8',
+                '--glass-bg': 'rgba(255, 255, 255, 0.72)',
+                '--glass-bg-strong': 'rgba(255, 255, 255, 0.88)',
+                '--glass-border': 'rgba(0, 0, 0, 0.08)',
+                '--glass-shadow': '0 2px 16px rgba(0, 0, 0, 0.06)',
+                '--glass-shadow-hover': '0 4px 24px rgba(0, 0, 0, 0.10)',
+                '--border-color': '#e8e8e8',
+                '--border-color-strong': '#d4d4d4',
+                '--hover-bg': 'rgba(0, 0, 0, 0.03)',
+                '--blob-opacity': '0.45'
+            };
+
+            function setTheme(theme) {
+                if (theme === 'light') {
+                    for (var key in LIGHT_VARS) {
+                        html.style.setProperty(key, LIGHT_VARS[key]);
+                    }
+                    html.setAttribute('data-theme', 'light');
+                    // 图标内联样式：太阳高亮
+                    if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'scale(1.12)'; }
+                    if (moonIcon) { moonIcon.style.opacity = '0.35'; moonIcon.style.transform = 'scale(0.88)'; }
+                } else {
+                    for (var key in LIGHT_VARS) {
+                        html.style.removeProperty(key);
+                    }
+                    html.removeAttribute('data-theme');
+                    // 图标内联样式：月亮高亮
+                    if (sunIcon) { sunIcon.style.opacity = '0.35'; sunIcon.style.transform = 'scale(0.88)'; }
+                    if (moonIcon) { moonIcon.style.opacity = '1'; moonIcon.style.transform = 'scale(1.12)'; }
+                }
+            }
+
+            function switchTheme(theme) {
+                setTheme(theme);
+            }
+
+            // 初始化
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (saved === 'light') {
+                // 先静默设置再触发初始过渡
+                setTheme('light');
+            }
+            // 暗色默认无需操作（:root 已定义）
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var isLight = html.hasAttribute('data-theme') && html.getAttribute('data-theme') === 'light';
+                    var next = isLight ? 'dark' : 'light';
+                    localStorage.setItem(STORAGE_KEY, next);
+                    switchTheme(next);
+                });
+            }
+        })();
+
+        // ----------------------------------------------------
+        // Pjax 初始化函数
+        // ----------------------------------------------------
+        function initPjax() {
+            console.log("Pjax is initializing...");
+            var pjax = new Pjax({
+                // 监听所有非外部链接
+                elements: 'a:not([target="_blank"])', 
+                // 指定要替换的元素
+                selectors: [
+                    'title',
+                    '#pjax-container' // 替换主要内容区域
+                ]
+            });
+        }
+        
+        // ----------------------------------------------------
+        // Pjax 回调函数 (在内容切换完成后运行)
+        // ----------------------------------------------------
+        function afterPjaxLoad() {
+            console.log("Pjax content loaded. Re-initializing scripts...");
+            
+            // Live2D 模型硬重载逻辑
+            if (typeof OML2D !== 'undefined' && typeof OML2D.initialize === 'function') {
+                const oldStage = document.querySelector('.oml2d-stage'); 
+                if (oldStage) {
+                    oldStage.remove(); 
+                    console.log("Removed old Live2D stage.");
+                } else if (typeof OML2D.destroy === 'function') {
+                    OML2D.destroy();
+                }
+                
+                OML2D.initialize();
+                console.log("Live2D re-initialized.");
+            } 
+            
+            // 3. 重新运行其他脚本（例如代码高亮、数学公式渲染等）
+            // ...
+        }
+
+        // 监听 Pjax 完成事件，在新页面加载后重新初始化脚本
+        document.addEventListener('pjax:complete', afterPjaxLoad);
+        document.addEventListener('pjax:success', afterPjaxLoad);
+
+        // 首次加载和 Pjax 初始化 - 使用 window.onload 确保所有资源都已加载
+        window.onload = initPjax; 
+
+        // ----------------------------------------------------
+        // 您的引言切换脚本 (保持不变)
+        // ----------------------------------------------------
+        
+        // 1. 延迟加载 allQuotes 数组，初始化为 null
+        let allQuotes = null; 
+
+        function formatQuote(quote) {
+            return quote;
+        }
+        
+        function changeQuote() {
+            var quoteElement = document.getElementById('randomQuoteText');
+            var cardElement = document.getElementById('quoteCard'); 
+            
+            if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
+                try {
+                    allQuotes = JSON.parse(cardElement.dataset.quotes);
+                } catch (e) {
+                    console.error("Quotes data parsing failed:", e);
+                    allQuotes = [];
+                }
+            }
+
+            if (!allQuotes || allQuotes.length === 0) 
+            {
+                quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
+                return;
+            }
+
+            var newIndex;
+            var newQuote;
+            var maxAttempts = 5;
+            var attempts = 0;
+            
+            var currentHTML = quoteElement.innerHTML;
+            var currentText = currentHTML.trim().replace(/\s+/g, ' ');
+
+            do {
+                newIndex = Math.floor(Math.random() * allQuotes.length);
+                newQuote = allQuotes[newIndex];
+                attempts++;
+            } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
+
+            quoteElement.innerHTML = formatQuote(newQuote);
+        }
+    </script>
+    
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,425],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
+</html>

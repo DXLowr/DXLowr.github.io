@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>单行路OWR的博客</title>
+   <style>
+        /* ==========================================
+           CSS 变量 —— 白色底 + 液态玻璃层次风格
+           ========================================== */
+        /* 默认：暗色主题 */
+        :root {
+            --primary-color: #b0b0b0;
+            --accent-1: #5a4070;
+            --accent-2: #3a5570;
+            --accent-3: #705a40;
+            --text-color: #e0e0e0;
+            --text-color-light: #999999;
+            --background-color: #1a1a1a;
+            --glass-bg: rgba(28, 28, 32, 0.72);
+            --glass-bg-strong: rgba(28, 28, 32, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.35);
+            --border-color: #333333;
+            --border-color-strong: #555555;
+            --hover-bg: rgba(255, 255, 255, 0.04);
+            --blob-opacity: 0.28;
+        }
+
+        /* 亮色主题 */
+        [data-theme="light"] {
+            --primary-color: #4a4a4a;
+            --accent-1: #c4b5e0;
+            --accent-2: #b5d0e0;
+            --accent-3: #e0d4c4;
+            --text-color: #2c2c2c;
+            --text-color-light: #777777;
+            --background-color: #f8f8f8;
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-bg-strong: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.10);
+            --border-color: #e8e8e8;
+            --border-color-strong: #d4d4d4;
+            --hover-bg: rgba(0, 0, 0, 0.03);
+            --blob-opacity: 0.45;
+        }
+
+        /* ---- 动效色块背景 ---- */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景色块层 */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: var(--blob-opacity);
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+        }
+
+        .bg-blob-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-1);
+            top: -10%;
+            left: -8%;
+            animation-name: floatBlob1;
+            animation-duration: 18s;
+        }
+
+        .bg-blob-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-2);
+            top: 50%;
+            right: -6%;
+            animation-name: floatBlob2;
+            animation-duration: 22s;
+        }
+
+        .bg-blob-3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent-3);
+            bottom: -8%;
+            left: 30%;
+            animation-name: floatBlob3;
+            animation-duration: 20s;
+        }
+
+        .bg-blob-4 {
+            width: 280px;
+            height: 280px;
+            background: var(--accent-1);
+            top: 30%;
+            left: 50%;
+            animation-name: floatBlob4;
+            animation-duration: 24s;
+            opacity: 0.30;
+        }
+
+        @keyframes floatBlob1 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.15); }
+        }
+        @keyframes floatBlob2 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-50px, -60px) scale(1.10); }
+        }
+        @keyframes floatBlob3 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(40px, -50px) scale(1.12); }
+        }
+        @keyframes floatBlob4 {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-30px, 40px) scale(1.08); }
+        }
+
+        /* ---- 页面容器 ---- */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 60px;
+            overflow-x: hidden;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---- 固定标题栏（液态玻璃） ---- */
+        .fixed-title-bar {
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            width: 100%;
+            padding: 14px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 150;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .theme-toggle {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--hover-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            width: 54px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-color-strong);
+            transform: translateY(-50%) scale(1.06);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(-50%) scale(0.94);
+        }
+
+        /* 滑动高亮块 */
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--glass-bg-strong);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        [data-theme="light"] .theme-toggle::after {
+            transform: translateX(24px);
+        }
+
+        .theme-icon {
+            position: relative;
+            z-index: 1;
+            width: 27px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            line-height: 1;
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        /* 暗色主题默认：月亮高亮（由 JS 初始化时设置内联样式） */
+        .theme-icon-moon {
+            opacity: 1;
+            transform: scale(1.12);
+        }
+        .theme-icon-sun {
+            opacity: 0.35;
+            transform: scale(0.88);
+        }
+
+        .title-container {
+            max-width: 1200px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: center;
+            margin: 0;
+            letter-spacing: 0.04em;
+        }
+
+        .site-title a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .site-title a:hover {
+            opacity: 0.6;
+            text-decoration: none;
+        }
+
+        /* ---- 双栏主布局 ---- */
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            flex-grow: 1;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            width: 300px;
+            margin-left: 24px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10000;
+        }
+
+        /* ---- 卡片基础样式（液态玻璃） ---- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 18px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: var(--glass-shadow-hover);
+            transform: translateY(-1px);
+        }
+
+        /* ---- 链接 ---- */
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        a:hover {
+            opacity: 0.6;
+            text-decoration: none;
+        }
+
+        /* ---- 媒体查询 ---- */
+        @media (max-width: 960px) {
+            .main-wrapper {
+                flex-direction: column;
+                padding: 16px 10px;
+            }
+            .sidebar {
+                width: 100%;
+                margin-left: 0;
+                order: -1;
+            }
+        }
+
+        /* ---- 引言卡片 ---- */
+        .quote-card {
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .quote-card p {
+            width: 100%;
+            line-height: 1.8;
+            word-wrap: break-word;
+        }
+    </style>
+    
+   
+    
+<meta name="generator" content="Hexo 8.1.1"></head>
+<body class="page-container">
+    <div class="bg-blobs">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+        <div class="bg-blob bg-blob-3"></div>
+        <div class="bg-blob bg-blob-4"></div>
+    </div>
+    <div class="fixed-title-bar">
+        <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换主题">
+            <span class="theme-icon theme-icon-sun">☀️</span>
+            <span class="theme-icon theme-icon-moon">🌙</span>
+        </button>
+        <div class="title-container">
+            <div class="site-title"><a href="/">单行路OWR的博客</a></div>
+        </div>
+    </div>
+
+    <div class="main-wrapper" id="pjax-container">
+        <div class="main-content">
+  
+            
+
+<div class="category-section">
+    <h2 class="category-title"></h2>
+    
+    
+        
+        <style>
+    /* 列表容器 */
+    .post-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* 单个文章卡片样式 */
+    .post-list-item {
+        margin-bottom: 16px;
+    }
+
+    /* 链接和卡片内容区域 —— 液态玻璃 */
+    .post-card {
+        display: flex;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px) saturate(150%);
+        -webkit-backdrop-filter: blur(12px) saturate(150%);
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+        overflow: hidden;
+    }
+
+    /* 鼠标悬停和聚焦时的效果 */
+    .post-card:hover, .post-card:focus {
+        box-shadow: var(--glass-shadow-hover);
+        border-color: var(--border-color-strong);
+        transform: translateY(-2px);
+    }
+
+    /* 卡片左侧内容 (文字信息区域) */
+    .card-content {
+        flex-grow: 1;
+    }
+
+    /* 文章标题 */
+    .post-title {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--text-color);
+        margin: 0 0 4px 0;
+    }
+    
+    /* 文章日期样式 */
+    .post-date {
+        font-size: 0.85rem;
+        color: var(--text-color-light);
+        margin: 0 0 8px 0;
+    }
+    
+    /* 文章预览（摘录）样式 */
+    .post-excerpt {
+        font-size: 0.95rem;
+        color: var(--text-color-light);
+        margin: 0;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.4;
+        max-height: 2.8em;
+    }
+
+    /* 文章缩略图 */
+    .post-thumbnail {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+        border: 1px solid var(--glass-border);
+        margin-right: 18px;
+    }
+
+    @media (max-width: 600px) {
+        .post-thumbnail {
+            display: none;
+        }
+    }
+
+</style>
+
+
+
+<ul class="post-list">
+    
+      <li class="post-list-item">
+        <a href="/2026/01/16/Ghost%20in%20the%20Snow/" class="post-card">
+            <img class="post-thumbnail" src="/images/Ghost%20in%20the%20Snow.webp" alt="Ghost in the Snow" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">Ghost in the Snow</h2>
+                <p class="post-date">2026年1月16日</p>
+                
+                
+                
+                <p class="post-excerpt">9.0&#x2F;10
+只是个单曲，但是太nb了真的想说。
+麻枝准王朝了，红烧天堂王朝了。
+流媒体版本不是完整版本，流媒体更倾向于“流行歌曲”，而完整版本更倾向于“游戏配乐”。区别就是完整版有着长达一...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2026/01/04/The%20Snow%20Goose/" class="post-card">
+            <img class="post-thumbnail" src="/images/The%20Snow%20Goose.webp" alt="The Snow Goose" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">The Snow Goose</h2>
+                <p class="post-date">2026年1月4日</p>
+                
+                
+                
+                <p class="post-excerpt">9.2&#x2F;10
+概念专辑的经典之作。
+我的语言完全不能描述这张专辑的美妙，求求你们听一听吧😭。
+改编自Paul Gallico的同名短篇小说，乐队与原作者曾有版权纠纷，不多展开。
+专辑的叙事...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/31/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C.webp" alt="皇后大道东" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">皇后大道东</h2>
+                <p class="post-date">2025年12月31日</p>
+                
+                
+                
+                <p class="post-excerpt">6.4&#x2F;10
+今天拼了，这张专辑，从来没有在大陆发行过的
+相信大部分人知道这个专辑都是因为罗大佑，但是这张不是罗大佑的个人专辑，而是罗大佑的厂牌音乐工厂的专辑，收录的不少是其他艺术家演唱的作...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/25/Pink%20Moon/" class="post-card">
+            <img class="post-thumbnail" src="/images/Pink%20Moon.webp" alt="Pink Moon" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">Pink Moon</h2>
+                <p class="post-date">2025年12月25日</p>
+                
+                
+                
+                <p class="post-excerpt">9.0
+我有抑郁症.jpg
+Nick Drake由于过量用药去世，这是他生前的最后一张专辑，相较于前两张专辑，编曲减少了其他乐器的成分，注重于吉他（只有第一首有钢琴）
+如梵高一般，Nick的作品也是在...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/24/I%20Believe%20in%20Father%20Christmas/" class="post-card">
+            <img class="post-thumbnail" src="/images/I%20Believe%20in%20Father%20Christmas.webp" alt="I Believe in Father Christmas" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">I Believe in Father Christmas</h2>
+                <p class="post-date">2025年12月24日</p>
+                
+                
+                
+                <p class="post-excerpt">圣诞特辑，不打分，只是推荐去听一听这首歌
+虽然不过圣诞节，但是作为粉丝,Greg Lake的这首单曲还是要说一说的
+笑点一：这首歌的风格基本与Lake的其他歌曲（大部分的乐队专辑和他的两张个人专辑）完...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/24/%E9%BE%99%E7%9A%84%E4%BC%A0%E4%BA%BA%E7%BB%AD%E7%AF%87/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E9%BE%99%E7%9A%84%E4%BC%A0%E4%BA%BA%E7%BB%AD%E7%AF%87.webp" alt="龙的传人续篇" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">龙的传人续篇</h2>
+                <p class="post-date">2025年12月24日</p>
+                
+                
+                
+                <p class="post-excerpt">8.9&#x2F;10
+同样是历史意义很重大的专辑，但是歌曲到现在也很有现实意义
+华语流行的先锋之作，虽然发行时间晚一些，但前卫性更甚于罗大佑《之乎者也》，无论是吉他、贝斯等摇滚乐器还是唢呐、埙等传统...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/22/%E6%9C%AA%E6%9D%A5%E7%9A%84%E4%B8%BB%E4%BA%BA%E7%BF%81/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E6%9C%AA%E6%9D%A5%E7%9A%84%E4%B8%BB%E4%BA%BA%E7%BF%81.webp" alt="未来的主人翁" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">未来的主人翁</h2>
+                <p class="post-date">2025年12月22日</p>
+                
+                
+                
+                <p class="post-excerpt">7.9&#x2F;10
+为了写这张这三天已经听了五遍了，但是没有什么灵感，不过为了按计划进行还是发点啥，反正专辑很出名赏析很多，我纯路边（
+不久前还是罗大佑&#x2F;音乐工厂几张录音室专辑中少有的曲...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/21/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97.webp" alt="万能青年旅店" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">万能青年旅店</h2>
+                <p class="post-date">2025年12月21日</p>
+                
+                
+                
+                <p class="post-excerpt">9.6&#x2F;10
+cjb国药最严厉的父亲
+依旧人文关怀，依旧批判，但是精巧的作词与精妙的作编曲将这张专辑推到了新的高度
+专辑概念性不如万青的二专，但是完整度和整体性没有问题，同时结构良好，一般的...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/20/%E7%BA%A2%E6%97%97%E4%B8%8B%E7%9A%84%E8%9B%8B/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E7%BA%A2%E6%97%97%E4%B8%8B%E7%9A%84%E8%9B%8B.webp" alt="红旗下的蛋" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">红旗下的蛋</h2>
+                <p class="post-date">2025年12月20日</p>
+                
+                
+                
+                <p class="post-excerpt">9.1&#x2F;10
+华语摇滚毫无疑问青史留名的专辑，当然之后要发的几张也是
+很难用某个具体的流派定义这张专辑，歌曲涉及范围很，小号、萨克斯、键盘等乐器的运用更添特色
+专辑以《飞了》晦涩难懂的歌词开...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/15/%E7%A2%8E%E7%A2%8E%E5%BF%B51/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E7%A2%8E%E7%A2%8E%E5%BF%B51.webp" alt="碎碎念1" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">碎碎念1</h2>
+                <p class="post-date">2025年12月15日</p>
+                
+                
+                
+                <p class="post-excerpt">四级前和高数考试前都在干些什么，总之没有学习，但是也给我玩上微软大战代码了，虽然全用的插件
+blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是真得学了没时间做了
+做出来本来想写点隐私暴露成分...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/13/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.webp" alt="二手玫瑰" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">二手玫瑰</h2>
+                <p class="post-date">2025年12月13日</p>
+                
+                
+                
+                <p class="post-excerpt">7.3&#x2F;10
+正如专辑封面所言，最妖娆
+整张专辑有着很明显的二人转元素，唱腔和器乐的搭配，风格很独特，可能不是很容易接受，我就属于不好接受的那种(
+上次刚说没见过其他乐队用唢呐的，这就来了一...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/12/05/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.webp" alt="悲剧的诞生" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">悲剧的诞生</h2>
+                <p class="post-date">2025年12月5日</p>
+                
+                
+                
+                <p class="post-excerpt">7.7&#x2F;10诡异、怪诞的黑童话乐队15年重组之后发行首专，收录的都是乐队02年解散之前的作品如果说《時代在召喚》是直白的隐喻，那么这张就是隐晦的隐喻，感觉说了什么，但是我真的不知道说了什么(...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/11/30/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.webp" alt="時代在召喚" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">時代在召喚</h2>
+                <p class="post-date">2025年11月30日</p>
+                
+                
+                
+                <p class="post-excerpt">不敢评分内地乐队，别问为什么乐队名专辑名歌名歌词全用繁体字相比曲来说，我认为词更值得说，当然曲也很强，但是我不是很懂假假條首专，充斥着隐喻和变形的专辑，比如几首歌名：湘靈鼓瑟 (Renaissance...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/11/26/Welcome%20to%20the%20Dying%20Season/" class="post-card">
+            <img class="post-thumbnail" src="/images/Welcome%20to%20the%20Dying%20Season.webp" alt="Welcome to the Dying Season" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">Welcome to the Dying Season</h2>
+                <p class="post-date">2025年11月26日</p>
+                
+                
+                
+                <p class="post-excerpt">7.6&#x2F;10やなぎなぎ的红烧天堂二专，今日刚发售虽然基本都是老曲但是给我听爽了加急插队来写评价不同于之前发的摇滚&#x2F;泛摇滚，这张是很典的流行乐专辑，可以说是单曲合辑，当然前面发的两个...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/11/22/%E8%BF%B7%E8%B7%A1%E6%B3%A2/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.webp" alt="迷跡波" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">迷跡波</h2>
+                <p class="post-date">2025年11月22日</p>
+                
+                
+                
+                <p class="post-excerpt">3.5&#x2F;10耳朵的刑具，极致糟糕的录音混音首先分低主要原因就是烂录混音，当然本身音乐性也就那样，不考虑录混的话大概6-7分之间。看了一下last.fm，近半年就听过一次影色舞，刚刚听完一次全...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/11/18/In%20The%20Court%20Of%20The%20Crimson%20King/" class="post-card">
+            <img class="post-thumbnail" src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.webp" alt="In The Court Of The Crimson King" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">In The Court Of The Crimson King</h2>
+                <p class="post-date">2025年11月18日</p>
+                
+                
+                
+                <p class="post-excerpt">9.9&#x2F;10都给我前摇了那还说啥了，高分给你了。King Crimson一专，几乎定义了前卫摇滚这一流派，尤其是折衷和交响。一共五首歌，都很喜欢，硬要说的话Moonchild的即兴部分过长，...</p>
+            </div>
+        </a>
+      </li>
+    
+      <li class="post-list-item">
+        <a href="/2025/11/15/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/" class="post-card">
+            <img class="post-thumbnail" src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.webp" alt="感情エフェクト" loading="lazy" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h2 class="post-title">感情エフェクト</h2>
+                <p class="post-date">2025年11月15日</p>
+                
+                
+                
+                <p class="post-excerpt">7&#x2F;10我在是个前摇批之前首先是个OOR歌迷(并非粉丝OOR的第三张录音室专辑，大概是OOR热度最低的一张专辑(棍母二专和地下时期的两张mini专除外)。我认为也是OOR最独特的一张专辑(还...</p>
+            </div>
+        </a>
+      </li>
+    
+</ul>
+    
+</div>
+
+<style>
+    /* 分类标题样式 */
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-top: 0; /* 首页顶部无额外间距 */
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 5px;
+    }
+    
+    .empty-message {
+        color: var(--text-color-light);
+        padding: 10px 0;
+        text-align: center;
+        border: 1px dashed var(--border-color);
+        border-radius: 4px;
+        margin-bottom: 20px;
+    }
+</style>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="card" style="text-align: center;">
+                <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
+                <h3 class="profile-name">单行路OWR</h3>
+                <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
+            </div>
+
+            <div class="card quote-card" 
+                 id="quoteCard" 
+                 onclick="changeQuote()"
+                 data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
+     
+           <p id="randomQuoteText" 
+                   style="margin: 0;
+                   font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
+                    The daybreak is your midnight<br>The colours have all died
+                </p>
+            </div>
+        </aside>
+    </div>
+<script src="/js/pjax.min.js"></script>
+
+    <script>
+        // ----------------------------------------------------
+        // 主题切换
+        // ----------------------------------------------------
+        (function() {
+            var STORAGE_KEY = 'blog-theme';
+            var html = document.documentElement;
+            var toggleBtn = document.getElementById('themeToggle');
+            var sunIcon = document.querySelector('.theme-icon-sun');
+            var moonIcon = document.querySelector('.theme-icon-moon');
+            // 亮色主题 CSS 变量值
+            var LIGHT_VARS = {
+                '--primary-color': '#4a4a4a',
+                '--accent-1': '#c4b5e0',
+                '--accent-2': '#b5d0e0',
+                '--accent-3': '#e0d4c4',
+                '--text-color': '#2c2c2c',
+                '--text-color-light': '#777777',
+                '--background-color': '#f8f8f8',
+                '--glass-bg': 'rgba(255, 255, 255, 0.72)',
+                '--glass-bg-strong': 'rgba(255, 255, 255, 0.88)',
+                '--glass-border': 'rgba(0, 0, 0, 0.08)',
+                '--glass-shadow': '0 2px 16px rgba(0, 0, 0, 0.06)',
+                '--glass-shadow-hover': '0 4px 24px rgba(0, 0, 0, 0.10)',
+                '--border-color': '#e8e8e8',
+                '--border-color-strong': '#d4d4d4',
+                '--hover-bg': 'rgba(0, 0, 0, 0.03)',
+                '--blob-opacity': '0.45'
+            };
+
+            function setTheme(theme) {
+                if (theme === 'light') {
+                    for (var key in LIGHT_VARS) {
+                        html.style.setProperty(key, LIGHT_VARS[key]);
+                    }
+                    html.setAttribute('data-theme', 'light');
+                    // 图标内联样式：太阳高亮
+                    if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'scale(1.12)'; }
+                    if (moonIcon) { moonIcon.style.opacity = '0.35'; moonIcon.style.transform = 'scale(0.88)'; }
+                } else {
+                    for (var key in LIGHT_VARS) {
+                        html.style.removeProperty(key);
+                    }
+                    html.removeAttribute('data-theme');
+                    // 图标内联样式：月亮高亮
+                    if (sunIcon) { sunIcon.style.opacity = '0.35'; sunIcon.style.transform = 'scale(0.88)'; }
+                    if (moonIcon) { moonIcon.style.opacity = '1'; moonIcon.style.transform = 'scale(1.12)'; }
+                }
+            }
+
+            function switchTheme(theme) {
+                setTheme(theme);
+            }
+
+            // 初始化
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (saved === 'light') {
+                // 先静默设置再触发初始过渡
+                setTheme('light');
+            }
+            // 暗色默认无需操作（:root 已定义）
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    var isLight = html.hasAttribute('data-theme') && html.getAttribute('data-theme') === 'light';
+                    var next = isLight ? 'dark' : 'light';
+                    localStorage.setItem(STORAGE_KEY, next);
+                    switchTheme(next);
+                });
+            }
+        })();
+
+        // ----------------------------------------------------
+        // Pjax 初始化函数
+        // ----------------------------------------------------
+        function initPjax() {
+            console.log("Pjax is initializing...");
+            var pjax = new Pjax({
+                // 监听所有非外部链接
+                elements: 'a:not([target="_blank"])', 
+                // 指定要替换的元素
+                selectors: [
+                    'title',
+                    '#pjax-container' // 替换主要内容区域
+                ]
+            });
+        }
+        
+        // ----------------------------------------------------
+        // Pjax 回调函数 (在内容切换完成后运行)
+        // ----------------------------------------------------
+        function afterPjaxLoad() {
+            console.log("Pjax content loaded. Re-initializing scripts...");
+            
+            // Live2D 模型硬重载逻辑
+            if (typeof OML2D !== 'undefined' && typeof OML2D.initialize === 'function') {
+                const oldStage = document.querySelector('.oml2d-stage'); 
+                if (oldStage) {
+                    oldStage.remove(); 
+                    console.log("Removed old Live2D stage.");
+                } else if (typeof OML2D.destroy === 'function') {
+                    OML2D.destroy();
+                }
+                
+                OML2D.initialize();
+                console.log("Live2D re-initialized.");
+            } 
+            
+            // 3. 重新运行其他脚本（例如代码高亮、数学公式渲染等）
+            // ...
+        }
+
+        // 监听 Pjax 完成事件，在新页面加载后重新初始化脚本
+        document.addEventListener('pjax:complete', afterPjaxLoad);
+        document.addEventListener('pjax:success', afterPjaxLoad);
+
+        // 首次加载和 Pjax 初始化 - 使用 window.onload 确保所有资源都已加载
+        window.onload = initPjax; 
+
+        // ----------------------------------------------------
+        // 您的引言切换脚本 (保持不变)
+        // ----------------------------------------------------
+        
+        // 1. 延迟加载 allQuotes 数组，初始化为 null
+        let allQuotes = null; 
+
+        function formatQuote(quote) {
+            return quote;
+        }
+        
+        function changeQuote() {
+            var quoteElement = document.getElementById('randomQuoteText');
+            var cardElement = document.getElementById('quoteCard'); 
+            
+            if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
+                try {
+                    allQuotes = JSON.parse(cardElement.dataset.quotes);
+                } catch (e) {
+                    console.error("Quotes data parsing failed:", e);
+                    allQuotes = [];
+                }
+            }
+
+            if (!allQuotes || allQuotes.length === 0) 
+            {
+                quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
+                return;
+            }
+
+            var newIndex;
+            var newQuote;
+            var maxAttempts = 5;
+            var attempts = 0;
+            
+            var currentHTML = quoteElement.innerHTML;
+            var currentText = currentHTML.trim().replace(/\s+/g, ' ');
+
+            do {
+                newIndex = Math.floor(Math.random() * allQuotes.length);
+                newQuote = allQuotes[newIndex];
+                attempts++;
+            } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
+
+            quoteElement.innerHTML = formatQuote(newQuote);
+        }
+    </script>
+    
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,425],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
+</html>
