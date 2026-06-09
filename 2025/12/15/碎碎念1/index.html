@@ -71,29 +71,60 @@
         }
 
         .bg-blob-1 {
-            width: 550px;
-            height: 550px;
-            background: #93c5fd;
+            width: 550px; height: 550px; background: #1e3250;
+            animation: drift1 22s ease-in-out infinite;
         }
         .bg-blob-2 {
-            width: 450px;
-            height: 450px;
-            background: #f9a8d4;
+            width: 450px; height: 450px; background: #3d1f35;
+            animation: drift2 26s ease-in-out infinite;
         }
         .bg-blob-3 {
-            width: 400px;
-            height: 400px;
-            background: #a5d8ff;
+            width: 400px; height: 400px; background: #1a3550;
+            animation: drift3 24s ease-in-out infinite;
         }
         .bg-blob-4 {
-            width: 350px;
-            height: 350px;
-            background: #fbcfe8;
+            width: 350px; height: 350px; background: #352038;
+            animation: drift4 28s ease-in-out infinite;
         }
         .bg-blob-5 {
-            width: 300px;
-            height: 300px;
-            background: #bfdbfe;
+            width: 300px; height: 300px; background: #1c2d48;
+            animation: drift5 20s ease-in-out infinite;
+        }
+
+        /* 亮色模式：浅粉和浅蓝 */
+        [data-theme="light"] .bg-blob-1 { background: #93c5fd; }
+        [data-theme="light"] .bg-blob-2 { background: #f9a8d4; }
+        [data-theme="light"] .bg-blob-3 { background: #a5d8ff; }
+        [data-theme="light"] .bg-blob-4 { background: #fbcfe8; }
+        [data-theme="light"] .bg-blob-5 { background: #bfdbfe; }
+
+        @keyframes drift1 {
+            0%,100% { left: 5%; top: 2%; }
+            30% { left: 22%; top: 55%; }
+            60% { left: 65%; top: 60%; }
+            85% { left: 18%; top: 8%; }
+        }
+        @keyframes drift2 {
+            0%,100% { left: 55%; top: 5%; }
+            35% { left: 8%; top: 25%; }
+            65% { left: 72%; top: 48%; }
+        }
+        @keyframes drift3 {
+            0%,100% { left: 12%; top: 58%; }
+            40% { left: 45%; top: 18%; }
+            70% { left: 32%; top: 72%; }
+        }
+        @keyframes drift4 {
+            0%,100% { left: 38%; top: 42%; }
+            25% { left: 60%; top: 12%; }
+            55% { left: 10%; top: 68%; }
+            80% { left: 70%; top: 55%; }
+        }
+        @keyframes drift5 {
+            0%,100% { left: 48%; top: 28%; }
+            30% { left: 22%; top: 65%; }
+            60% { left: 68%; top: 12%; }
+            85% { left: 55%; top: 70%; }
         }
 
         /* ---- 页面容器 ---- */
@@ -459,12 +490,15 @@
         <div class="main-content">
   
             <style>
-    /* 文章容器卡片 */
+    /* 文章容器卡片 —— 半透明毛玻璃 */
     .article-container {
-        background-color: var(--surface-color-transparent); /* 深色卡片背景 */
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
         padding: 30px;
-        border-radius: 4px;
-        border: 1px solid var(--border-color); /* 增加边框强调线条感 */
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
     }
 
     /* 文章标题 */
@@ -573,6 +607,7 @@
     }
     .post-nav a {
         flex: 1;
+        min-width: 0;
         padding: 14px 18px;
         background: var(--glass-bg);
         backdrop-filter: blur(8px);
@@ -584,6 +619,7 @@
         transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
         font-size: 0.95rem;
         line-height: 1.5;
+        overflow: hidden;
     }
     .post-nav a:hover {
         box-shadow: var(--glass-shadow-hover);
@@ -607,10 +643,19 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
+    .post-nav .nav-title {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
     @media (max-width: 600px) {
         .post-nav {
-            flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+        }
+        .post-nav a {
+            padding: 10px 12px;
+            font-size: 0.85rem;
         }
         .post-nav-next {
             margin-left: 0;
@@ -644,13 +689,13 @@
         
             <a class="post-nav-prev" href="/2025/12/20/%E7%BA%A2%E6%97%97%E4%B8%8B%E7%9A%84%E8%9B%8B/">
                 <span class="nav-label">← 上一篇</span>
-                红旗下的蛋
+                <span class="nav-title">红旗下的蛋</span>
             </a>
         
         
             <a class="post-nav-next" href="/2025/12/13/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0/">
                 <span class="nav-label">下一篇 →</span>
-                二手玫瑰
+                <span class="nav-title">二手玫瑰</span>
             </a>
         
     </nav>
@@ -674,7 +719,7 @@
            <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
-                    世界就在那儿欢乐也疼 是悲剧的诞生
+                    Death seed, blind man's greed<br>Poets' starving, children bleed<br>Nothing he's got he really needs<br>Twenty-first century schizoid man
                 </p>
             </div>
         </aside>
@@ -762,111 +807,52 @@
         })();
 
         // ----------------------------------------------------
-        // 流动色块 + 光标排斥效果
+        // 光标划开色块效果
         // ----------------------------------------------------
         (function() {
-            var blobs = [];
-            var cursorX = -1000, cursorY = -1000;
-            var winW, winH;
-
-            // 色块定义：每个色块的 "休息位置" (%)
-            var blobDefs = [
-                { el: document.querySelector('.bg-blob-1'), homeX: 0.12, homeY: 0.08, ampX: 0.10, ampY: 0.12, speed: 0.00025 },
-                { el: document.querySelector('.bg-blob-2'), homeX: 0.68, homeY: 0.15, ampX: 0.09, ampY: 0.14, speed: 0.00020 },
-                { el: document.querySelector('.bg-blob-3'), homeX: 0.20, homeY: 0.65, ampX: 0.12, ampY: 0.08, speed: 0.00022 },
-                { el: document.querySelector('.bg-blob-4'), homeX: 0.55, homeY: 0.58, ampX: 0.10, ampY: 0.11, speed: 0.00018 },
-                { el: document.querySelector('.bg-blob-5'), homeX: 0.42, homeY: 0.40, ampX: 0.08, ampY: 0.10, speed: 0.00023 }
-            ];
-
-            // 初始化色块
-            blobDefs.forEach(function(def) {
-                if (!def.el) return;
-                blobs.push({
-                    el: def.el,
-                    x: def.homeX * 100,
-                    y: def.homeY * 100,
-                    homeX: def.homeX,
-                    homeY: def.homeY,
-                    ampX: def.ampX,
-                    ampY: def.ampY,
-                    speed: def.speed,
-                    phase: Math.random() * Math.PI * 2
-                });
-            });
+            var blobs = Array.from(document.querySelectorAll('.bg-blob'));
+            var cursorX = -9999, cursorY = -9999;
+            var offsets = blobs.map(function() { return { x: 0, y: 0 }; });
 
             document.addEventListener('mousemove', function(e) {
                 cursorX = e.clientX;
                 cursorY = e.clientY;
             });
             document.addEventListener('mouseleave', function() {
-                cursorX = -1000;
-                cursorY = -1000;
+                cursorX = -9999;
+                cursorY = -9999;
             });
 
-            function resize() {
-                winW = window.innerWidth;
-                winH = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
+            function update() {
+                blobs.forEach(function(blob, i) {
+                    var rect = blob.getBoundingClientRect();
+                    var cx = rect.left + rect.width / 2;
+                    var cy = rect.top + rect.height / 2;
+                    var dx = cx - cursorX;
+                    var dy = cy - cursorY;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    var maxDist = 480;
 
-            var lastTime = 0;
-            function animate(time) {
-                if (!lastTime) lastTime = time;
-                lastTime = time;
-
-                blobs.forEach(function(blob) {
-                    // 慢速流动 — 正弦波漂移
-                    var targetX = blob.homeX * 100 + Math.sin(time * blob.speed * 0.001 + blob.phase) * blob.ampX * 100;
-                    var targetY = blob.homeY * 100 + Math.cos(time * blob.speed * 0.0014 + blob.phase) * blob.ampY * 100;
-
-                    // 当前位（像素）
-                    var px = blob.x / 100 * winW;
-                    var py = blob.y / 100 * winH;
-
-                    // 光标排斥力
-                    if (cursorX > 0 && cursorY > 0) {
-                        var dx = px - cursorX;
-                        var dy = py - cursorY;
-                        var dist = Math.sqrt(dx * dx + dy * dy);
-                        var maxDist = 600;
-                        if (dist < maxDist && dist > 0.1) {
-                            var force = (1 - dist / maxDist);
-                            force = force * force * 60; // 二次方，近距离力更大
-                            targetX += (dx / dist) * force / winW * 100;
-                            targetY += (dy / dist) * force / winH * 100;
-                        }
+                    var targetX = 0, targetY = 0;
+                    if (cursorX > 0 && dist < maxDist && dist > 0.5) {
+                        var t = 1 - dist / maxDist;
+                        var push = t * t * t * 160;
+                        targetX = (dx / dist) * push;
+                        targetY = (dy / dist) * push;
                     }
 
-                    // 平滑插值
-                    blob.x += (targetX - blob.x) * 0.025;
-                    blob.y += (targetY - blob.y) * 0.025;
+                    // 弹簧般弹性归位：靠近时迅速推开，远离时缓慢归位
+                    var lerp = cursorX > 0 && dist < maxDist ? 0.18 : 0.04;
+                    offsets[i].x += (targetX - offsets[i].x) * lerp;
+                    offsets[i].y += (targetY - offsets[i].y) * lerp;
 
-                    // 钳制在 -20%~120% 以免跑到画面外
-                    blob.x = Math.max(-20, Math.min(120, blob.x));
-                    blob.y = Math.max(-20, Math.min(120, blob.y));
-
-                    // 应用到元素
-                    blob.el.style.transform = 'translate(' +
-                        ((blob.x - 50) + '%') + ', ' +
-                        ((blob.y - 50) + '%') + ')';
-                    blob.el.style.left = '50%';
-                    blob.el.style.top = '50%';
+                    blob.style.transform = 'translate(' +
+                        offsets[i].x.toFixed(1) + 'px,' +
+                        offsets[i].y.toFixed(1) + 'px)';
                 });
-
-                requestAnimationFrame(animate);
+                requestAnimationFrame(update);
             }
-
-            // 初始定位所有色块到中心
-            blobs.forEach(function(blob) {
-                blob.el.style.left = '50%';
-                blob.el.style.top = '50%';
-                blob.el.style.transform = 'translate(' +
-                    ((blob.homeX * 100 - 50) + '%') + ', ' +
-                    ((blob.homeY * 100 - 50) + '%') + ')';
-            });
-
-            requestAnimationFrame(animate);
+            requestAnimationFrame(update);
         })();
 
         // ----------------------------------------------------
