@@ -73,11 +73,6 @@
             margin-bottom: 12px;
             color: var(--text-color);
         }
-        p {
-            color: var(--text-color-light);
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
         .home-link {
             display: inline-block;
             padding: 12px 28px;
@@ -94,15 +89,6 @@
             transform: translateY(-2px);
             text-decoration: none;
         }
-        .quote {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.9rem;
-            color: var(--text-color-light);
-            font-style: italic;
-            line-height: 1.8;
-        }
     </style>
 </head>
 <body>
@@ -113,28 +99,8 @@
     </div>
     <div class="container">
         <div class="code">404</div>
-        <h1>你来到了没有知识的荒原</h1>
-        <p>这个页面不存在、已被移除、<br>或者你输入的地址有误。</p>
+        <h1>此页面已回归虚无</h1>
         <a class="home-link" href="/">← 回到首页</a>
-        <div class="quote" id="randomQuote"></div>
     </div>
-
-    <script>
-        (function() {
-            var quotes = [
-                "だって人生が長すぎる<br>「ムズイよ」",
-                "死にたかった 死ななくてよかった",
-                "现实像个石头 精神像个蛋<br>石头虽然坚硬 可蛋才是生命",
-                "曲终人不见 江上数峰青",
-                "月を目指し旅立った日<br>火星探査成功した日<br>いつかオールトの曇も見つけ<br>外を知るだろう<br>それが暮らしさ",
-                "世界就在那儿欢乐也疼 是悲剧的诞生",
-                "The daybreak is your midnight<br>The colours have all died",
-                "野心勃勃的灯火<br>瞬间吞没黑暗的脸庞",
-                "Twenty-first century schizoid man"
-            ];
-            var i = Math.floor(Math.random() * quotes.length);
-            document.getElementById('randomQuote').innerHTML = quotes[i];
-        })();
-    </script>
 </body>
 </html>

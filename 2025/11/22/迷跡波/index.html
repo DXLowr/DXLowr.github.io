@@ -1,30 +1,43 @@
 <!DOCTYPE html>
+<!--
+  ============================================================
+  单行路OWR的博客 - 全局布局模板 (layout.ejs)
+  
+  技术栈：Hexo + EJS 模板引擎 + Pjax 无刷新加载
+  设计风格：液态玻璃 (Glassmorphism) + 暗/亮双主题
+  ============================================================
+-->
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
+    <!-- viewport: 禁止用户缩放，保证移动端布局稳定 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>单行路OWR的博客</title>
    <style>
         /* ==========================================
-           CSS 变量 —— 白色底 + 液态玻璃层次风格
+           CSS 变量（自定义属性）—— 白色底 + 液态玻璃层次风格
+           通过 CSS 变量实现暗/亮双主题无缝切换，
+           所有组件颜色均引用这些变量，避免硬编码。
            ========================================== */
-        /* 默认：暗色主题 */
+        
+        /* ---------- 默认主题：暗色 (Dark) ---------- */
         :root {
-            --primary-color: #b0b0b0;
-            --text-color: #e0e0e0;
-            --text-color-light: #999999;
-            --background-color: #1a1a1a;
-            --glass-bg: rgba(28, 28, 32, 0.72);
-            --glass-bg-strong: rgba(28, 28, 32, 0.88);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
-            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.35);
-            --border-color: #333333;
-            --border-color-strong: #555555;
-            --hover-bg: rgba(255, 255, 255, 0.04);
+            --primary-color: #b0b0b0;          /* 主色调：中灰 */
+            --text-color: #e0e0e0;             /* 正文文字颜色：浅灰白 */
+            --text-color-light: #999999;        /* 次要文字颜色：暗灰 */
+            --background-color: #1a1a1a;        /* 页面背景色：深黑 */
+            --glass-bg: rgba(28, 28, 32, 0.72);           /* 玻璃背景（半透明） */
+            --glass-bg-strong: rgba(28, 28, 32, 0.88);    /* 玻璃背景（更不透，用于标题栏） */
+            --glass-border: rgba(255, 255, 255, 0.08);    /* 玻璃边框：微弱白色 */
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);       /* 玻璃阴影 */
+            --glass-shadow-hover: 0 4px 24px rgba(0, 0, 0, 0.35); /* 悬浮时更深的阴影 */
+            --border-color: #333333;             /* 通用边框色 */
+            --border-color-strong: #555555;      /* 强调边框色 */
+            --hover-bg: rgba(255, 255, 255, 0.04); /* 悬浮背景：微弱白色叠加 */
         }
 
-        /* 亮色主题 */
+        /* ---------- 亮色主题 (Light) ---------- */
+        /* 当 <html> 元素具有 data-theme="light" 属性时生效 */
         [data-theme="light"] {
             --primary-color: #4a4a4a;
             --text-color: #2c2c2c;
@@ -40,7 +53,12 @@
             --hover-bg: rgba(0, 0, 0, 0.03);
         }
 
-        /* ---- 动效色块背景 ---- */
+        /* ==========================================
+           流动色块背景 (Animated Blobs)
+           使用 5 个半透明模糊圆形，通过 CSS @keyframes
+           在页面背景中缓慢漂移，营造动态氛围。
+           暗色模式：深蓝/紫色调；亮色模式：浅蓝/粉色调。
+           ========================================== */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--background-color);
@@ -48,28 +66,30 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            overflow-x: hidden;
-            position: relative;
+            overflow-x: hidden;   /* 禁止水平滚动条 */
+            position: relative;   /* 为子元素绝对定位提供参照 */
         }
 
-        /* 背景色块层 —— 流动颜色 */
+        /* 色块容器：固定定位覆盖全屏，不拦截鼠标事件 */
         .bg-blobs {
             position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
+            inset: 0;            /* 等同于 top/right/bottom/left: 0 */
+            z-index: 0;          /* 最底层 */
+            pointer-events: none;/* 鼠标事件穿透，不影响页面交互 */
             overflow: hidden;
         }
 
+        /* 单个色块：绝对定位的模糊圆形 */
         .bg-blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.35;
-            mix-blend-mode: screen;
-            will-change: transform;
+            filter: blur(100px);  /* 高斯模糊，形成柔和光斑效果 */
+            opacity: 0.35;        /* 半透明 */
+            mix-blend-mode: screen; /* 滤色混合模式，叠加时变亮 */
+            will-change: transform; /* 提示浏览器此元素将发生变换，优化性能 */
         }
 
+        /* 5 个色块：不同尺寸、颜色和动画轨迹 */
         .bg-blob-1 {
             width: 550px; height: 550px; background: #1e3250;
             animation: drift1 22s ease-in-out infinite;
@@ -91,13 +111,14 @@
             animation: drift5 20s ease-in-out infinite;
         }
 
-        /* 亮色模式：浅粉和浅蓝 */
-        [data-theme="light"] .bg-blob-1 { background: #93c5fd; }
-        [data-theme="light"] .bg-blob-2 { background: #f9a8d4; }
-        [data-theme="light"] .bg-blob-3 { background: #a5d8ff; }
-        [data-theme="light"] .bg-blob-4 { background: #fbcfe8; }
-        [data-theme="light"] .bg-blob-5 { background: #bfdbfe; }
+        /* 亮色模式：替换色块为浅粉和浅蓝色调 */
+        [data-theme="light"] .bg-blob-1 { background: #93c5fd; }  /* 浅蓝 */
+        [data-theme="light"] .bg-blob-2 { background: #f9a8d4; }  /* 浅粉 */
+        [data-theme="light"] .bg-blob-3 { background: #a5d8ff; }  /* 天蓝 */
+        [data-theme="light"] .bg-blob-4 { background: #fbcfe8; }  /* 淡粉 */
+        [data-theme="light"] .bg-blob-5 { background: #bfdbfe; }  /* 淡蓝 */
 
+        /* 5 个色块各自的漂移动画关键帧 */
         @keyframes drift1 {
             0%,100% { left: 5%; top: 2%; }
             30% { left: 22%; top: 55%; }
@@ -127,7 +148,11 @@
             85% { left: 55%; top: 70%; }
         }
 
-        /* ---- 页面容器 ---- */
+        /* ==========================================
+           页面容器与固定标题栏
+           ========================================== */
+        
+        /* 主页面容器：Flex 列布局，最小高度撑满视口，为固定标题栏留出 60px 顶部间距 */
         .page-container {
             display: flex;
             flex-direction: column;
@@ -137,35 +162,41 @@
             width: 100%;
             box-sizing: border-box;
             position: relative;
-            z-index: 1;
+            z-index: 1;  /* 高于背景色块 (z-index:0) */
         }
 
-        /* ---- 固定标题栏（液态玻璃） ---- */
+        /* 固定标题栏：液态玻璃效果，始终置顶 */
         .fixed-title-bar {
             background: var(--glass-bg-strong);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            backdrop-filter: blur(16px) saturate(180%);        /* 毛玻璃模糊 + 饱和度增强 */
+            -webkit-backdrop-filter: blur(16px) saturate(180%); /* Safari 兼容 */
             width: 100%;
             padding: 14px 20px;
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 150;
+            z-index: 150;           /* 高于所有内容层 */
             border-bottom: 1px solid var(--glass-border);
             box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
             box-sizing: border-box;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* 标题水平居中 */
+            align-items: center;     /* 标题垂直居中 */
         }
+
+        /* ==========================================
+           主题切换按钮 (Theme Toggle)
+           胶囊形滑块开关，暗色模式月亮高亮，亮色模式太阳高亮。
+           使用 ::after 伪元素作为滑动指示块。
+           ========================================== */
         .theme-toggle {
             position: absolute;
             left: 16px;
             top: 50%;
-            transform: translateY(-50%);
+            transform: translateY(-50%);  /* 垂直居中 */
             background: var(--hover-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            border-radius: 16px;          /* 胶囊形 */
             width: 54px;
             height: 30px;
             cursor: pointer;
@@ -173,20 +204,20 @@
             align-items: center;
             justify-content: space-between;
             padding: 0;
-            overflow: hidden;
+            overflow: hidden;             /* 裁剪内部滑动块 */
             transition: border-color 0.3s, transform 0.2s;
         }
 
         .theme-toggle:hover {
             border-color: var(--border-color-strong);
-            transform: translateY(-50%) scale(1.06);
+            transform: translateY(-50%) scale(1.06);  /* 悬浮微放大 */
         }
 
         .theme-toggle:active {
-            transform: translateY(-50%) scale(0.94);
+            transform: translateY(-50%) scale(0.94);  /* 按下微缩小 */
         }
 
-        /* 滑动高亮块 */
+        /* 滑动高亮块 (伪元素)：白色小圆，暗色模式靠左，亮色模式 translateX(24px) 靠右 */
         .theme-toggle::after {
             content: '';
             position: absolute;
@@ -198,17 +229,19 @@
             background: var(--glass-bg-strong);
             border: 1px solid var(--glass-border);
             box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* 弹性缓动 */
             z-index: 0;
         }
 
+        /* 亮色模式：滑动块右移 24px */
         [data-theme="light"] .theme-toggle::after {
             transform: translateX(24px);
         }
 
+        /* 图标容器：太阳 ☀️ 在左，月亮 🌙 在右 */
         .theme-icon {
             position: relative;
-            z-index: 1;
+            z-index: 1;           /* 高于滑动块 */
             width: 27px;
             height: 100%;
             display: flex;
@@ -217,10 +250,10 @@
             font-size: 0.8rem;
             line-height: 1;
             transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
+            pointer-events: none; /* 点击穿透到按钮 */
         }
 
-        /* 暗色主题默认：月亮高亮（由 JS 初始化时设置内联样式） */
+        /* 暗色主题默认：月亮高亮（由 JS 初始化时设置内联样式覆盖） */
         .theme-icon-moon {
             opacity: 1;
             transform: scale(1.12);
@@ -230,6 +263,7 @@
             transform: scale(0.88);
         }
 
+        /* 标题容器：限制最大宽度，文字居中 */
         .title-container {
             max-width: 1200px;
             padding: 0 10px;
@@ -258,22 +292,26 @@
             text-decoration: none;
         }
 
-        /* ---- 双栏主布局 ---- */
+        /* ==========================================
+           双栏主布局 (Main Layout)
+           左侧：主内容区 (flex-grow) | 右侧：侧边栏 (300px 固定宽度)
+           移动端 (<960px)：切换为单列布局，侧边栏移到顶部
+           ========================================== */
         .main-wrapper {
             display: flex;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 24px 20px;
-            flex-grow: 1;
+            flex-grow: 1;         /* 撑满剩余高度 */
             overflow-x: hidden;
             box-sizing: border-box;
         }
 
         .main-content {
-            flex-grow: 1;
+            flex-grow: 1;         /* 占据剩余空间 */
             width: 100%;
-            min-width: 0;
+            min-width: 0;         /* 允许 Flex 子元素收缩到小于内容宽度 */
             overflow-x: hidden;
             box-sizing: border-box;
         }
@@ -281,12 +319,16 @@
         .sidebar {
             width: 300px;
             margin-left: 24px;
-            flex-shrink: 0;
+            flex-shrink: 0;       /* 不收缩，保持 300px */
             position: relative;
-            z-index: auto;
+            z-index: auto;        /* 与内容同级，不覆盖 */
         }
 
-        /* ---- 卡片基础样式（液态玻璃） ---- */
+        /* ==========================================
+           卡片基础样式 (Glassmorphism Card)
+           所有内容卡片共享：半透明背景 + 毛玻璃模糊 +
+           微弱边框 + 阴影 + 悬浮微上浮效果
+           ========================================== */
         .card {
             background: var(--glass-bg);
             backdrop-filter: blur(12px) saturate(150%);
@@ -301,10 +343,10 @@
 
         .card:hover {
             box-shadow: var(--glass-shadow-hover);
-            transform: translateY(-1px);
+            transform: translateY(-1px);  /* 悬浮微微上浮 1px */
         }
 
-        /* ---- 链接 ---- */
+        /* ---- 全局链接样式 ---- */
         a {
             color: var(--text-color);
             text-decoration: none;
@@ -315,7 +357,10 @@
             text-decoration: none;
         }
 
-        /* ---- 媒体查询 ---- */
+        /* ==========================================
+           响应式布局：移动端 (<960px)
+           双栏变单栏，侧边栏移至顶部
+           ========================================== */
         @media (max-width: 960px) {
             .main-wrapper {
                 flex-direction: column;
@@ -324,11 +369,11 @@
             .sidebar {
                 width: 100%;
                 margin-left: 0;
-                order: -1;
+                order: -1;  /* 侧边栏移到主内容上方 */
             }
         }
 
-        /* ---- 引言卡片 ---- */
+        /* ---- 引言卡片：可点击切换，禁止选中 ---- */
         .quote-card {
             cursor: pointer;
             user-select: none;
@@ -342,17 +387,21 @@
 
         /* Live2D 舞台：不阻挡交互、隐藏背景 */
         .oml2d-stage {
-            pointer-events: none !important;
+            pointer-events: none !important;   /* 舞台本身不拦截鼠标 */
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
             overflow: hidden;
         }
         .oml2d-stage canvas {
-            pointer-events: auto !important;
+            pointer-events: auto !important;   /* 但 canvas 可拖拽交互 */
         }
 
-        /* 回到顶部按钮 */
+        /* ==========================================
+           回到顶部按钮 (Back to Top)
+           固定右下角，圆形毛玻璃按钮。
+           滚动超过 400px 时 JS 添加 .visible 类显示。
+           ========================================== */
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -372,16 +421,16 @@
             z-index: 140;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px);
+            transform: translateY(20px);     /* 默认下移隐藏 */
             transition: opacity 0.3s, visibility 0.3s, transform 0.3s, box-shadow 0.3s;
             font-size: 1.2rem;
             color: var(--text-color);
-            pointer-events: none;
+            pointer-events: none;            /* 隐藏时不可点击 */
         }
         .back-to-top.visible {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0);        /* 回到原位 */
             pointer-events: auto;
         }
         .back-to-top:hover {
@@ -389,11 +438,15 @@
             transform: translateY(-3px) !important;
         }
 
-        /* 图片灯箱 */
+        /* ==========================================
+           图片灯箱 (Lightbox)
+           点击文章内图片放大查看，Esc 或点击背景关闭。
+           默认隐藏，JS 添加 .active 类显示。
+           ========================================== */
         .lightbox-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.92);
+            background: rgba(0, 0, 0, 0.92);  /* 深色半透明遮罩 */
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -401,7 +454,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s, visibility 0.3s;
-            cursor: zoom-out;
+            cursor: zoom-out;                /* 点击背景关闭 */
         }
         .lightbox-overlay.active {
             opacity: 1;
@@ -410,14 +463,14 @@
         .lightbox-overlay img {
             max-width: 90vw;
             max-height: 90vh;
-            object-fit: contain;
+            object-fit: contain;            /* 保持比例完整显示 */
             border-radius: 4px;
             cursor: default;
-            transform: scale(0.9);
+            transform: scale(0.9);           /* 默认缩小 */
             transition: transform 0.3s;
         }
         .lightbox-overlay.active img {
-            transform: scale(1);
+            transform: scale(1);             /* 激活时正常大小 */
         }
         .lightbox-close {
             position: absolute;
@@ -435,7 +488,12 @@
             opacity: 1;
         }
 
-        /* 滚动渐入动画 */
+        /* ==========================================
+           滚动渐入动画 (Scroll Reveal)
+           使用 IntersectionObserver 监听元素进入视口，
+           添加 .visible 类触发 opacity 淡入。
+           不使用 translateY 避免横向溢出。
+           ========================================== */
         .animate-in {
             opacity: 0;
             transition: opacity 0.6s ease-out;
@@ -444,7 +502,7 @@
             opacity: 1;
         }
 
-        /* Pjax 页面切换过渡 */
+        /* Pjax 页面切换过渡：切换时先淡出再淡入 */
         #pjax-container {
             transition: opacity 0.25s ease;
         }
@@ -461,7 +519,224 @@
    
     
 <meta name="generator" content="Hexo 8.1.1"></head>
+<!--
+  ============================================================
+  HTML Body：页面主体结构
+  1. 流动色块背景 (bg-blobs)
+  2. 固定标题栏 (fixed-title-bar) + 主题切换按钮
+  3. 回到顶部按钮 (back-to-top)
+  4. 图片灯箱遮罩 (lightbox-overlay)
+  5. 双栏主布局 (main-wrapper)
+     - 左侧 main-content：由子模板（index.ejs / post.ejs）填充 <style>
+    /* 文章容器卡片 —— 半透明毛玻璃 */
+    .article-container {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        padding: 30px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    /* 文章标题 */
+    .article-title {
+        font-size: 2rem; 
+        font-weight: 700; 
+        color: var(--text-color); /* 浅色文本 */
+        margin-top: 0;
+        margin-bottom: 10px; 
+    }
+
+    /* 文章元数据（日期） */
+    .article-meta {
+        color: var(--text-color-light); /* 次要文本 */
+        font-size: 0.9rem; 
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color); /* 保持边框作为分割线 */
+        padding-bottom: 10px; 
+    }
+
+    /* 内容区域图片 */
+    .article-image {
+        max-width: 100%; 
+        height: auto; 
+        display: block;
+        margin: 0 auto 20px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color); /* 增加图片边框 */
+    }
+
+    /* 主内容区排版优化 */
+    .article-content {
+        font-size: 1rem; 
+        color: var(--text-color); 
+    }
+    .article-content p {
+        margin-bottom: 1em;
+    }
+    /* 正文内图片自适应 */
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+    }
+
+    /* =======================================
+       【常驻隐藏 / 悬停显示功能 CSS】
+       ======================================= */
+    .article-content .censor-text {
+        /* 隐藏状态：纯黑色覆盖 */
+        color: #000000; 
+        background-color: #000000; 
+        
+        font-weight: 700; 
+        
+        /* 动画过渡 */
+        transition: color 0.3s, background-color 0.3s;
+        
+        /* 光标 */
+        cursor: pointer;
+        
+        /* 避免其他干扰 */
+        text-shadow: none; 
+        box-shadow: none;
+    }
+    
+    /* 悬停状态：移除覆盖，显示文字 */
+    .article-content .censor-text:hover {
+        /* 【关键修复】：悬停时，强制使用纯白色 */
+        color: #FFFFFF; 
+        background-color: transparent; /* 悬停时，移除背景覆盖 */
+    }
+
+    /* =======================================
+       【保留：HTML <ruby> 标签样式】
+       ======================================= */
+    /* Ruby Annotation 容器 */
+    .article-content ruby {
+        line-height: normal;
+        color: var(--text-color);
+    }
+    
+    /* 注音文本（Ruby Text: <rt>） */
+    .article-content rt {
+        font-size: 0.6em;
+        font-weight: 500;
+        color: var(--text-color-light); 
+        white-space: nowrap;
+        padding-top: 2px;
+    }
+
+    /* =======================================
+       上一篇 / 下一篇导航
+       ======================================= */
+    .post-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+    }
+    .post-nav a {
+        flex: 1;
+        min-width: 0;
+        padding: 14px 18px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        overflow: hidden;
+    }
+    .post-nav a:hover {
+        box-shadow: var(--glass-shadow-hover);
+        border-color: var(--border-color-strong);
+        transform: translateY(-2px);
+        opacity: 1;
+        text-decoration: none;
+    }
+    .post-nav-prev {
+        text-align: left;
+    }
+    .post-nav-next {
+        text-align: right;
+        margin-left: auto;
+    }
+    .post-nav .nav-label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--text-color-light);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .post-nav .nav-title {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    @media (max-width: 600px) {
+        .post-nav {
+            gap: 8px;
+        }
+        .post-nav a {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+        }
+        .post-nav-next {
+            margin-left: 0;
+        }
+    }
+
+</style>
+
+<div class="article-container animate-in">
+    <h1 class="article-title">迷跡波</h1>
+
+    <div class="article-meta">
+        发布日期: 2025年11月22日 00:00
+    </div>
+    
+    <div class="article-content animate-in">
+        <p><img src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.jpg"><br>3.5&#x2F;10<br>耳朵的刑具，极致糟糕的录音混音<br>首先分低主要原因就是烂录混音，当然本身音乐性也就那样，不考虑录混的话大概6-7分之间。<br>看了一下last.fm，近半年就听过一次影色舞，刚刚听完一次全专，耳朵真受不了啊。<br>声音混成一团，完全没有分离度，还有毫无立体可言的空间感，毫无起伏可言的动态。<br>硬拉增益导致的削波让本来就是失真效果器的吉他进一步失真，一个乐器就能做到嘈杂(虽然是双吉他配置就是了)。<br>我很好奇这些日本人怎么做到的听不清贝斯但低频又多到轰头，基本只有潜在表明和迷路日々的贝斯能全程听清。<br>在如此烂的器乐的衬托下羊姐的声音本应能显得正常一点，但是过度增益的器乐压过了人声，再加上声音混作一团，本来就肾虚声更肾虚了。<br>完全商业化公式化的作词作曲编曲，但是偶然还有些好东西<br>春日影(MyGO!!!!! ver.)虽然有些小鬼，不过ktv金曲。<br>——何で春日影やったの？<br>無路矢的前奏感觉很熟悉，这点不论。和声(叫这个吗？)很独特，也是我曲子最喜欢的一首(大概)<br>但是11.22是高松灯的生日<br>另外说句题外话狗团的专辑出得好快，ras好久才有个专，至今好像也就两个专吧</p>
+
+    </div>
+
+    
+    <nav class="post-nav">
+        
+            <a class="post-nav-prev" href="/2025/11/26/Welcome%20to%20the%20Dying%20Season/">
+                <span class="nav-label">← 上一篇</span>
+                <span class="nav-title">Welcome to the Dying Season</span>
+            </a>
+        
+        
+            <a class="post-nav-next" href="/2025/11/18/In%20The%20Court%20Of%20The%20Crimson%20King/">
+                <span class="nav-label">下一篇 →</span>
+                <span class="nav-title">In The Court Of The Crimson King</span>
+            </a>
+        
+    </nav>
+    
+    
+</div>
+     - 右侧 sidebar：个人信息卡片 + 随机引言卡片
+  ============================================================
+-->
 <body class="page-container">
+    <!-- 5 个流动色块，组成动态背景 -->
     <div class="bg-blobs">
         <div class="bg-blob bg-blob-1"></div>
         <div class="bg-blob bg-blob-2"></div>
@@ -469,26 +744,37 @@
         <div class="bg-blob bg-blob-4"></div>
         <div class="bg-blob bg-blob-5"></div>
     </div>
+    
+    <!-- 固定顶部标题栏 -->
     <div class="fixed-title-bar">
+        <!-- 主题切换按钮：胶囊形，内含 ☀️ 太阳和 🌙 月亮图标 -->
         <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换主题">
             <span class="theme-icon theme-icon-sun">☀️</span>
             <span class="theme-icon theme-icon-moon">🌙</span>
         </button>
         <div class="title-container">
+            <!-- 网站标题，点击回到首页 -->
             <div class="site-title"><a href="/">单行路OWR的博客</a></div>
         </div>
     </div>
 
+    <!-- 回到顶部按钮：初始隐藏，滚动 >400px 显示 -->
     <button class="back-to-top" id="backToTop" title="回到顶部" aria-label="回到顶部">↑</button>
 
+    <!-- 图片灯箱：全屏遮罩 + 大图 -->
     <div class="lightbox-overlay" id="lightboxOverlay">
         <span class="lightbox-close" id="lightboxClose">&times;</span>
         <img src="" alt="" id="lightboxImg">
     </div>
 
+    <!--
+      主内容区 (Pjax 容器)
+      id="pjax-container" 是 Pjax 切换的目标区域，
+      页面跳转时仅替换此容器内容，实现无刷新加载。
+    -->
     <div class="main-wrapper" id="pjax-container">
+        <!-- 左侧：主内容区，由 Hexo 子模板渲染 -->
         <div class="main-content">
-  
             <style>
     /* 文章容器卡片 —— 半透明毛玻璃 */
     .article-container {
@@ -696,19 +982,27 @@
 </div>
         </div>
         
+        <!-- 右侧：侧边栏 -->
         <aside class="sidebar">
+            <!-- 个人信息卡片：头像 + 昵称 + 简介 -->
             <div class="card animate-in" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
                 <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
             </div>
 
+            <!--
+              随机引言卡片
+              - data-quotes 属性存储完整引言数组的 JSON，供 JS 切换使用
+              - 点击 changeQuote() 随机切换到下一条引言
+              - animate-in 类使其在滚动进入视口时淡入
+            -->
             <div class="card quote-card animate-in" 
                  id="quoteCard" 
                  onclick="changeQuote()"
                  data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
      
-           <p id="randomQuoteText" 
+                <p id="randomQuoteText" 
                    style="margin: 0;
                    font-size: 0.95rem; color: var(--text-color-light); text-align: center;">
                     野心勃勃的灯火<br>瞬间吞没黑暗的脸庞
@@ -719,16 +1013,21 @@
 <script src="/js/pjax.min.js"></script>
 
     <script>
-        // ----------------------------------------------------
-        // 主题切换
-        // ----------------------------------------------------
+        // ============================================================
+        //  1. 主题切换 (Theme Toggle)
+        //     优先级：localStorage 手动设置 > 系统 prefers-color-scheme
+        //     通过内联样式覆盖 CSS 变量实现即时切换（无需刷新）
+        //     监听系统主题变化，但仅在无手动覆盖时自动跟随
+        // ============================================================
         (function() {
-            var STORAGE_KEY = 'blog-theme';
-            var html = document.documentElement;
+            var STORAGE_KEY = 'blog-theme';              // localStorage 存储键名
+            var html = document.documentElement;         // <html> 根元素
             var toggleBtn = document.getElementById('themeToggle');
             var sunIcon = document.querySelector('.theme-icon-sun');
             var moonIcon = document.querySelector('.theme-icon-moon');
-            // 亮色主题 CSS 变量值
+            
+            // 亮色主题的 CSS 变量值映射表
+            // 暗色模式直接移除内联样式，回退到 :root 定义的默认值
             var LIGHT_VARS = {
                 '--primary-color': '#4a4a4a',
                 '--text-color': '#2c2c2c',
@@ -744,21 +1043,29 @@
                 '--hover-bg': 'rgba(0, 0, 0, 0.03)'
             };
 
+            /**
+             * 设置主题
+             * @param {string} theme - 'light' | 'dark'
+             * 亮色：逐条写入内联 CSS 变量 + 设置 data-theme 属性
+             * 暗色：移除所有内联变量，回退 :root 默认值
+             */
             function setTheme(theme) {
                 if (theme === 'light') {
+                    // 将亮色变量逐条写入 <html> 内联样式，覆盖 :root 中的默认值
                     for (var key in LIGHT_VARS) {
                         html.style.setProperty(key, LIGHT_VARS[key]);
                     }
                     html.setAttribute('data-theme', 'light');
-                    // 图标内联样式：太阳高亮
+                    // 图标状态：太阳高亮、月亮暗淡
                     if (sunIcon) { sunIcon.style.opacity = '1'; sunIcon.style.transform = 'scale(1.12)'; }
                     if (moonIcon) { moonIcon.style.opacity = '0.35'; moonIcon.style.transform = 'scale(0.88)'; }
                 } else {
+                    // 暗色：清除内联变量，CSS 回退到 :root 默认暗色值
                     for (var key in LIGHT_VARS) {
                         html.style.removeProperty(key);
                     }
                     html.removeAttribute('data-theme');
-                    // 图标内联样式：月亮高亮
+                    // 图标状态：月亮高亮、太阳暗淡
                     if (sunIcon) { sunIcon.style.opacity = '0.35'; sunIcon.style.transform = 'scale(0.88)'; }
                     if (moonIcon) { moonIcon.style.opacity = '1'; moonIcon.style.transform = 'scale(1.12)'; }
                 }
@@ -768,110 +1075,139 @@
                 setTheme(theme);
             }
 
-            // 初始化
+            // --- 初始化：读取 localStorage 或跟随系统 ---
             var saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
+                // 有手动记录，直接使用
                 setTheme(saved);
             } else {
-                // 无手动偏好时，跟随系统
+                // 无手动记录，跟随系统配色方案偏好
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
                     setTheme('light');
                 }
+                // 否则保持暗色默认
             }
-            // 监听系统主题变化（仅在无手动覆盖时生效）
+            
+            // 监听系统主题变化（仅在用户未手动设置时自动跟随）
             if (window.matchMedia) {
                 window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(e) {
                     var savedNow = localStorage.getItem(STORAGE_KEY);
                     if (!savedNow) {
+                        // 无手动覆盖 → 跟随系统
                         setTheme(e.matches ? 'light' : 'dark');
                     }
                 });
             }
 
+            // 按钮点击：切换并保存到 localStorage
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', function() {
                     var isLight = html.hasAttribute('data-theme') && html.getAttribute('data-theme') === 'light';
                     var next = isLight ? 'dark' : 'light';
-                    localStorage.setItem(STORAGE_KEY, next);
+                    localStorage.setItem(STORAGE_KEY, next);  // 持久化偏好
                     switchTheme(next);
                 });
             }
         })();
 
-        // ----------------------------------------------------
-        // 光标划开色块效果
-        // ----------------------------------------------------
+        // ============================================================
+        //  2. 光标推开色块效果 (Blob Repulsion)
+        //     鼠标移入页面时，5 个背景色块会被"推开"远离光标。
+        //     靠近时弹性推开 (lerp=0.18)，远离时缓慢归位 (lerp=0.04)。
+        //     使用 requestAnimationFrame 实现 60fps 平滑动画。
+        // ============================================================
         (function() {
             var blobs = Array.from(document.querySelectorAll('.bg-blob'));
-            var cursorX = -9999, cursorY = -9999;
+            var cursorX = -9999, cursorY = -9999;  // 光标坐标，初始在屏幕外
+            
+            // 每个色块当前的 translate 偏移量 { x, y }
             var offsets = blobs.map(function() { return { x: 0, y: 0 }; });
 
+            // 跟踪鼠标位置
             document.addEventListener('mousemove', function(e) {
                 cursorX = e.clientX;
                 cursorY = e.clientY;
             });
+            // 鼠标离开页面 → 光标置为屏幕外，色块全部归位
             document.addEventListener('mouseleave', function() {
                 cursorX = -9999;
                 cursorY = -9999;
             });
 
+            /**
+             * 每帧更新：计算每个色块与光标的距离，
+             * 距离越近推力越大 (三次方衰减)，使用线性插值平滑过渡
+             */
             function update() {
                 blobs.forEach(function(blob, i) {
                     var rect = blob.getBoundingClientRect();
-                    var cx = rect.left + rect.width / 2;
-                    var cy = rect.top + rect.height / 2;
-                    var dx = cx - cursorX;
-                    var dy = cy - cursorY;
-                    var dist = Math.sqrt(dx * dx + dy * dy);
-                    var maxDist = 480;
+                    var cx = rect.left + rect.width / 2;   // 色块中心 X
+                    var cy = rect.top + rect.height / 2;   // 色块中心 Y
+                    var dx = cx - cursorX;                  // X 方向距离
+                    var dy = cy - cursorY;                  // Y 方向距离
+                    var dist = Math.sqrt(dx * dx + dy * dy); // 欧几里得距离
+                    var maxDist = 480;                      // 最大影响半径 (px)
 
-                    var targetX = 0, targetY = 0;
+                    var targetX = 0, targetY = 0;           // 目标偏移量
                     if (cursorX > 0 && dist < maxDist && dist > 0.5) {
-                        var t = 1 - dist / maxDist;
-                        var push = t * t * t * 160;
-                        targetX = (dx / dist) * push;
+                        // 在影响范围内：推力 = (1 - dist/maxDist)³ × 160
+                        var t = 1 - dist / maxDist;          // 0(远) ~ 1(近)
+                        var push = t * t * t * 160;          // 三次方衰减，最大推力 160px
+                        targetX = (dx / dist) * push;        // 沿方向推开
                         targetY = (dy / dist) * push;
                     }
 
-                    // 弹簧般弹性归位：靠近时迅速推开，远离时缓慢归位
+                    // 线性插值平滑：靠近时快速响应 (0.18)，远离时缓慢归位 (0.04)
                     var lerp = cursorX > 0 && dist < maxDist ? 0.18 : 0.04;
                     offsets[i].x += (targetX - offsets[i].x) * lerp;
                     offsets[i].y += (targetY - offsets[i].y) * lerp;
 
+                    // 应用变换
                     blob.style.transform = 'translate(' +
                         offsets[i].x.toFixed(1) + 'px,' +
                         offsets[i].y.toFixed(1) + 'px)';
                 });
-                requestAnimationFrame(update);
+                requestAnimationFrame(update);  // 递归调用，持续动画循环
             }
-            requestAnimationFrame(update);
+            requestAnimationFrame(update);      // 启动动画循环
         })();
 
-        // ----------------------------------------------------
-        // Pjax 初始化函数（含过渡动画）
-        // ----------------------------------------------------
+        // ============================================================
+        //  3. Pjax 无刷新页面加载
+        //     拦截所有内部链接点击，通过 AJAX 加载新内容并替换
+        //     #pjax-container，避免整页刷新。
+        //     包含淡出/淡入过渡动画。
+        //     切换完成后重新绑定事件（灯箱、滚动动画、波纹等）。
+        // ============================================================
         var pjaxInstance = null;
+        
+        /**
+         * 初始化 Pjax 实例
+         * elements: 拦截所有不含 target="_blank" 的 <a> 标签
+         * selectors: 需要替换的页面区域（title + #pjax-container）
+         */
         function initPjax() {
             console.log("Pjax is initializing...");
-            if (pjaxInstance) { pjaxInstance = null; }
+            if (pjaxInstance) { pjaxInstance = null; }  // 清理旧实例
             pjaxInstance = new Pjax({
-                elements: 'a:not([target="_blank"])', 
+                elements: 'a:not([target="_blank"])',   // 排除新窗口打开的链接
                 selectors: [
-                    'title',
-                    '#pjax-container'
+                    'title',                             // 更新页面标题
+                    '#pjax-container'                    // 更新主内容区
                 ]
             });
         }
 
-        // 页面切换前：淡出
+        // pjax:send 事件：请求发出前 → 淡出当前内容
         document.addEventListener('pjax:send', function() {
             var container = document.getElementById('pjax-container');
             if (container) { container.classList.add('pjax-fading'); }
         });
 
-        // ----------------------------------------------------
-        // Pjax 回调函数 (在内容切换完成后运行)
-        // ----------------------------------------------------
+        /**
+         * Pjax 加载完成后的回调
+         * 新内容已插入 DOM，需要重新绑定所有交互事件。
+         */
         function afterPjaxLoad() {
             console.log("Pjax content loaded. Re-initializing scripts...");
             
@@ -879,16 +1215,12 @@
             var container = document.getElementById('pjax-container');
             if (container) { container.classList.remove('pjax-fading'); }
 
-            // 重新初始化滚动动画观察器
-            initScrollAnimations();
-            
-            // 重新绑定灯箱事件
-            bindLightbox();
+            // 重新初始化各种交互功能
+            initScrollAnimations();   // 滚动渐入动画观察器
+            bindLightbox();           // 图片灯箱事件绑定
+            bindRipple();             // 卡片点击波纹效果
 
-            // 重新绑定波纹事件
-            bindRipple();
-
-            // Live2D 模型硬重载逻辑
+            // Live2D 模型重载：移除旧舞台，重新初始化
             if (typeof OML2D !== 'undefined' && typeof OML2D.initialize === 'function') {
                 var oldStage = document.querySelector('.oml2d-stage'); 
                 if (oldStage) {
@@ -902,11 +1234,11 @@
             } 
         }
 
-        // 监听 Pjax 完成事件
+        // 同时监听 complete 和 success 确保兼容
         document.addEventListener('pjax:complete', afterPjaxLoad);
         document.addEventListener('pjax:success', afterPjaxLoad);
 
-        // 首次加载
+        // 首次页面加载：初始化所有功能
         window.onload = function() {
             initPjax();
             initScrollAnimations();
@@ -914,10 +1246,13 @@
             bindRipple();
         };
 
-        // ----------------------------------------------------
-        // 回到顶部按钮
-        // ----------------------------------------------------
+        // ============================================================
+        //  4. 回到顶部按钮
+        //     监听 scroll 事件，滚动超过 400px 时显示圆形按钮。
+        //     点击后平滑滚动到页面顶部。
+        // ============================================================
         var backToTopBtn = document.getElementById('backToTop');
+        
         function toggleBackToTop() {
             if (!backToTopBtn) return;
             if (window.scrollY > 400) {
@@ -926,31 +1261,40 @@
                 backToTopBtn.classList.remove('visible');
             }
         }
+        // passive: true 表示不调用 preventDefault()，提升滚动性能
         window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        
         if (backToTopBtn) {
             backToTopBtn.addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
-        // ----------------------------------------------------
-        // 图片灯箱
-        // ----------------------------------------------------
+        // ============================================================
+        //  5. 图片灯箱 (Image Lightbox)
+        //     点击文章内图片 → 全屏遮罩放大查看。
+        //     关闭方式：点击遮罩背景 / 点击 × 按钮 / 按 Esc 键。
+        // ============================================================
         var lightboxOverlay = document.getElementById('lightboxOverlay');
         var lightboxImg = document.getElementById('lightboxImg');
         var lightboxClose = document.getElementById('lightboxClose');
 
+        /** 打开灯箱：设置图片 src，显示遮罩，锁定页面滚动 */
         function openLightbox(src) {
             if (!lightboxOverlay || !lightboxImg) return;
             lightboxImg.src = src;
             lightboxOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';  // 禁止背景滚动
         }
+        
+        /** 关闭灯箱：隐藏遮罩，恢复页面滚动 */
         function closeLightbox() {
             if (!lightboxOverlay) return;
             lightboxOverlay.classList.remove('active');
-            document.body.style.overflow = '';
+            document.body.style.overflow = '';        // 恢复滚动
         }
+        
+        // 点击遮罩背景或关闭按钮 → 关闭
         if (lightboxOverlay) {
             lightboxOverlay.addEventListener('click', function(e) {
                 if (e.target === lightboxOverlay || e.target === lightboxClose) {
@@ -961,14 +1305,19 @@
         if (lightboxClose) {
             lightboxClose.addEventListener('click', closeLightbox);
         }
+        // 键盘 Esc → 关闭
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') { closeLightbox(); }
         });
 
+        /**
+         * 绑定灯箱事件到文章内图片
+         * 排除灯箱内部图片，给正文图片添加 zoom-in 光标和点击放大
+         */
         function bindLightbox() {
             var articleImgs = document.querySelectorAll('.article-content img');
             articleImgs.forEach(function(img) {
-                if (img.closest('.lightbox-overlay')) return;
+                if (img.closest('.lightbox-overlay')) return;  // 跳过灯箱内部图片
                 img.style.cursor = 'zoom-in';
                 img.addEventListener('click', function() {
                     openLightbox(img.src);
@@ -976,11 +1325,16 @@
             });
         }
 
-        // ----------------------------------------------------
-        // 滚动渐入动画 (IntersectionObserver)
-        // ----------------------------------------------------
+        // ============================================================
+        //  6. 滚动渐入动画 (Scroll Reveal via IntersectionObserver)
+        //     监听带有 .animate-in 类的元素，当其进入视口时
+        //     添加 .visible 类触发 CSS opacity 淡入过渡。
+        //     每个元素只触发一次（observe 后立即 unobserve）。
+        // ============================================================
         var scrollObserver = null;
+        
         function initScrollAnimations() {
+            // 先断开旧观察器（Pjax 切换后重新绑定时需要）
             if (scrollObserver) { scrollObserver.disconnect(); }
             var targets = document.querySelectorAll('.animate-in');
             if (!targets.length) return;
@@ -988,32 +1342,43 @@
             scrollObserver = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        scrollObserver.unobserve(entry.target);
+                        entry.target.classList.add('visible');     // 触发淡入
+                        scrollObserver.unobserve(entry.target);    // 只触发一次
                     }
                 });
-            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+            }, {
+                threshold: 0.15,                    // 元素 15% 可见时触发
+                rootMargin: '0px 0px -30px 0px'     // 底部提前 30px 触发
+            });
 
             targets.forEach(function(el) {
                 scrollObserver.observe(el);
             });
         }
 
-        // ----------------------------------------------------
-        // 卡片点击波纹效果
-        // ----------------------------------------------------
+        // ============================================================
+        //  7. 卡片点击波纹效果 (Ripple Effect)
+        //     点击 .post-card 文章卡片时，从点击位置扩散圆形波纹。
+        //     波纹动画结束后自动移除 DOM 元素。
+        // ============================================================
         function bindRipple() {
             var cards = document.querySelectorAll('.post-card');
             cards.forEach(function(card) {
                 card.addEventListener('click', function(e) {
+                    // 创建波纹元素
                     var ripple = document.createElement('span');
                     ripple.className = 'ripple-effect';
+                    
                     var rect = card.getBoundingClientRect();
+                    // 波纹尺寸 = 卡片对角线长度（完全覆盖卡片）
                     var size = Math.max(rect.width, rect.height);
                     ripple.style.width = ripple.style.height = size + 'px';
+                    // 波纹中心 = 点击位置
                     ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
                     ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                    
                     card.appendChild(ripple);
+                    // 动画结束后清理 DOM
                     ripple.addEventListener('animationend', function() {
                         ripple.remove();
                     });
@@ -1021,21 +1386,37 @@
             });
         }
 
-        // ----------------------------------------------------
-        // 您的引言切换脚本 (保持不变)
-        // ----------------------------------------------------
+        // ============================================================
+        //  8. 随机引言切换 (Random Quote Switcher)
+        //     点击侧边栏引言卡片时随机切换到另一条引言。
+        //     - 引言数据来自 data-quotes 属性（EJS 服务端注入的 JSON）
+        //     - 延迟解析 JSON（首次点击时才解析，节省初始化开销）
+        //     - 避免连续出现相同引言（最多尝试 5 次随机）
+        // ============================================================
         
-        // 1. 延迟加载 allQuotes 数组，初始化为 null
-        let allQuotes = null; 
+        // 引言数组：延迟加载，首次点击时从 data-quotes 属性解析
+        let allQuotes = null;
 
+        /**
+         * 格式化引言文本
+         * @param {string} quote - 原始引言文本
+         * @returns {string} 格式化后的 HTML
+         */
         function formatQuote(quote) {
             return quote;
         }
         
+        /**
+         * 切换到一条随机引言
+         * 1. 首次调用时从卡片 data-quotes 属性解析 JSON
+         * 2. 随机选取一条与当前不同的引言
+         * 3. 更新卡片显示
+         */
         function changeQuote() {
             var quoteElement = document.getElementById('randomQuoteText');
             var cardElement = document.getElementById('quoteCard'); 
             
+            // 延迟加载：首次点击时从 data-quotes 属性解析引言数组
             if (allQuotes === null && cardElement && cardElement.dataset.quotes) {
                 try {
                     allQuotes = JSON.parse(cardElement.dataset.quotes);
@@ -1045,6 +1426,7 @@
                 }
             }
 
+            // 无数据或空数组 → 显示错误提示
             if (!allQuotes || allQuotes.length === 0) 
             {
                 quoteElement.innerHTML = formatQuote("（数据错误）无法切换引言。");
@@ -1053,18 +1435,23 @@
 
             var newIndex;
             var newQuote;
-            var maxAttempts = 5;
+            var maxAttempts = 5;    // 最大尝试次数，避免死循环
             var attempts = 0;
             
+            // 获取当前显示的文本（规范化空白后比较）
             var currentHTML = quoteElement.innerHTML;
             var currentText = currentHTML.trim().replace(/\s+/g, ' ');
 
+            // 随机选取一条与当前不同的引言
             do {
                 newIndex = Math.floor(Math.random() * allQuotes.length);
                 newQuote = allQuotes[newIndex];
                 attempts++;
-            } while (allQuotes.length > 1 && newQuote.trim().replace(/\s+/g, ' ') === currentText && attempts < maxAttempts);
+            } while (allQuotes.length > 1 &&
+                     newQuote.trim().replace(/\s+/g, ' ') === currentText &&
+                     attempts < maxAttempts);
 
+            // 更新显示
             quoteElement.innerHTML = formatQuote(newQuote);
         }
     </script>
