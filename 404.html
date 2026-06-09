@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到 | 单行路OWR的博客</title>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --text-color-light: #999;
+            --glass-bg: rgba(28, 28, 32, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        /* 背景色块 */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            mix-blend-mode: screen;
+        }
+        .bg-blob-1 { width: 500px; height: 500px; background: #93c5fd; top: -10%; left: -8%; }
+        .bg-blob-2 { width: 400px; height: 400px; background: #f9a8d4; top: 50%; right: -6%; }
+        .bg-blob-3 { width: 350px; height: 350px; background: #a5d8ff; bottom: -8%; left: 30%; }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 40px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            max-width: 500px;
+            width: 90%;
+        }
+        .code {
+            font-size: 7rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #93c5fd, #f9a8d4, #a5d8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+        p {
+            color: var(--text-color-light);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .home-link {
+            display: inline-block;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        .quote {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+            color: var(--text-color-light);
+            font-style: italic;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blobs">
+        <div class="bg-blob bg-blob-1"></div>
+        <div class="bg-blob bg-blob-2"></div>
+        <div class="bg-blob bg-blob-3"></div>
+    </div>
+    <div class="container">
+        <div class="code">404</div>
+        <h1>你来到了没有知识的荒原</h1>
+        <p>这个页面不存在、已被移除、<br>或者你输入的地址有误。</p>
+        <a class="home-link" href="/">← 回到首页</a>
+        <div class="quote" id="randomQuote"></div>
+    </div>
+
+    <script>
+        (function() {
+            var quotes = [
+                "だって人生が長すぎる<br>「ムズイよ」",
+                "死にたかった 死ななくてよかった",
+                "现实像个石头 精神像个蛋<br>石头虽然坚硬 可蛋才是生命",
+                "曲终人不见 江上数峰青",
+                "月を目指し旅立った日<br>火星探査成功した日<br>いつかオールトの曇も見つけ<br>外を知るだろう<br>それが暮らしさ",
+                "世界就在那儿欢乐也疼 是悲剧的诞生",
+                "The daybreak is your midnight<br>The colours have all died",
+                "野心勃勃的灯火<br>瞬间吞没黑暗的脸庞",
+                "Twenty-first century schizoid man"
+            ];
+            var i = Math.floor(Math.random() * quotes.length);
+            document.getElementById('randomQuote').innerHTML = quotes[i];
+        })();
+    </script>
+</body>
+</html>

@@ -11,9 +11,6 @@
         /* 默认：暗色主题 */
         :root {
             --primary-color: #b0b0b0;
-            --accent-1: #5a4070;
-            --accent-2: #3a5570;
-            --accent-3: #705a40;
             --text-color: #e0e0e0;
             --text-color-light: #999999;
             --background-color: #1a1a1a;
@@ -25,15 +22,11 @@
             --border-color: #333333;
             --border-color-strong: #555555;
             --hover-bg: rgba(255, 255, 255, 0.04);
-            --blob-opacity: 0.28;
         }
 
         /* 亮色主题 */
         [data-theme="light"] {
             --primary-color: #4a4a4a;
-            --accent-1: #c4b5e0;
-            --accent-2: #b5d0e0;
-            --accent-3: #e0d4c4;
             --text-color: #2c2c2c;
             --text-color-light: #777777;
             --background-color: #f8f8f8;
@@ -45,7 +38,6 @@
             --border-color: #e8e8e8;
             --border-color-strong: #d4d4d4;
             --hover-bg: rgba(0, 0, 0, 0.03);
-            --blob-opacity: 0.45;
         }
 
         /* ---- 动效色块背景 ---- */
@@ -60,7 +52,7 @@
             position: relative;
         }
 
-        /* 背景色块层 */
+        /* 背景色块层 —— 流动颜色 */
         .bg-blobs {
             position: fixed;
             inset: 0;
@@ -72,69 +64,36 @@
         .bg-blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: var(--blob-opacity);
-            animation-timing-function: ease-in-out;
-            animation-iteration-count: infinite;
-            animation-direction: alternate;
+            filter: blur(100px);
+            opacity: 0.35;
+            mix-blend-mode: screen;
+            will-change: transform;
         }
 
         .bg-blob-1 {
-            width: 500px;
-            height: 500px;
-            background: var(--accent-1);
-            top: -10%;
-            left: -8%;
-            animation-name: floatBlob1;
-            animation-duration: 18s;
+            width: 550px;
+            height: 550px;
+            background: #93c5fd;
         }
-
         .bg-blob-2 {
+            width: 450px;
+            height: 450px;
+            background: #f9a8d4;
+        }
+        .bg-blob-3 {
             width: 400px;
             height: 400px;
-            background: var(--accent-2);
-            top: 50%;
-            right: -6%;
-            animation-name: floatBlob2;
-            animation-duration: 22s;
+            background: #a5d8ff;
         }
-
-        .bg-blob-3 {
+        .bg-blob-4 {
             width: 350px;
             height: 350px;
-            background: var(--accent-3);
-            bottom: -8%;
-            left: 30%;
-            animation-name: floatBlob3;
-            animation-duration: 20s;
+            background: #fbcfe8;
         }
-
-        .bg-blob-4 {
-            width: 280px;
-            height: 280px;
-            background: var(--accent-1);
-            top: 30%;
-            left: 50%;
-            animation-name: floatBlob4;
-            animation-duration: 24s;
-            opacity: 0.30;
-        }
-
-        @keyframes floatBlob1 {
-            0%   { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, 80px) scale(1.15); }
-        }
-        @keyframes floatBlob2 {
-            0%   { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-50px, -60px) scale(1.10); }
-        }
-        @keyframes floatBlob3 {
-            0%   { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, -50px) scale(1.12); }
-        }
-        @keyframes floatBlob4 {
-            0%   { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-30px, 40px) scale(1.08); }
+        .bg-blob-5 {
+            width: 300px;
+            height: 300px;
+            background: #bfdbfe;
         }
 
         /* ---- 页面容器 ---- */
@@ -293,7 +252,7 @@
             margin-left: 24px;
             flex-shrink: 0;
             position: relative;
-            z-index: 10000;
+            z-index: auto;
         }
 
         /* ---- 卡片基础样式（液态玻璃） ---- */
@@ -349,6 +308,123 @@
             line-height: 1.8;
             word-wrap: break-word;
         }
+
+        /* Live2D 舞台：不阻挡交互、隐藏背景 */
+        .oml2d-stage {
+            pointer-events: none !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            overflow: hidden;
+        }
+        .oml2d-stage canvas {
+            pointer-events: auto !important;
+        }
+
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--glass-bg-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 140;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s, box-shadow 0.3s;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            pointer-events: none;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .back-to-top:hover {
+            box-shadow: var(--glass-shadow-hover);
+            transform: translateY(-3px) !important;
+        }
+
+        /* 图片灯箱 */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            cursor: zoom-out;
+        }
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 4px;
+            cursor: default;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .lightbox-overlay.active img {
+            transform: scale(1);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1001;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            line-height: 1;
+        }
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+
+        /* 滚动渐入动画 */
+        .animate-in {
+            opacity: 0;
+            transition: opacity 0.6s ease-out;
+        }
+        .animate-in.visible {
+            opacity: 1;
+        }
+
+        /* Pjax 页面切换过渡 */
+        #pjax-container {
+            transition: opacity 0.25s ease;
+        }
+        #pjax-container.pjax-fading {
+            opacity: 0.35;
+        }
+
+        /* category-section 禁止溢出滚动条 */
+        .category-section {
+            overflow: hidden;
+        }
     </style>
     
    
@@ -360,6 +436,7 @@
         <div class="bg-blob bg-blob-2"></div>
         <div class="bg-blob bg-blob-3"></div>
         <div class="bg-blob bg-blob-4"></div>
+        <div class="bg-blob bg-blob-5"></div>
     </div>
     <div class="fixed-title-bar">
         <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换主题">
@@ -371,6 +448,13 @@
         </div>
     </div>
 
+    <button class="back-to-top" id="backToTop" title="回到顶部" aria-label="回到顶部">↑</button>
+
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img src="" alt="" id="lightboxImg">
+    </div>
+
     <div class="main-wrapper" id="pjax-container">
         <div class="main-content">
   
@@ -378,6 +462,34 @@
 
 <div class="category-section">
     <h2 class="category-title"></h2>
+    
+    <!-- 骨架屏占位 -->
+    <div class="skeleton-list" id="skeletonList">
+        <div class="skeleton">
+            <div class="skeleton-thumb"></div>
+            <div class="skeleton-lines">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+            </div>
+        </div>
+        <div class="skeleton">
+            <div class="skeleton-thumb"></div>
+            <div class="skeleton-lines">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+            </div>
+        </div>
+        <div class="skeleton">
+            <div class="skeleton-thumb"></div>
+            <div class="skeleton-lines">
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+            </div>
+        </div>
+    </div>
     
     
         
@@ -404,20 +516,44 @@
         border-radius: 12px;
         border: 1px solid var(--glass-border);
         box-shadow: var(--glass-shadow);
-        transition: box-shadow 0.3s, border-color 0.3s, transform 0.3s;
+        transition: box-shadow 0.35s, border-color 0.35s, transform 0.35s, background 0.35s;
         overflow: hidden;
+        position: relative;
+    }
+
+    /* 卡片悬停光效 */
+    .post-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(255,255,255,0.03) 100%);
+        opacity: 0;
+        transition: opacity 0.35s;
+        pointer-events: none;
+        z-index: 0;
     }
 
     /* 鼠标悬停和聚焦时的效果 */
     .post-card:hover, .post-card:focus {
         box-shadow: var(--glass-shadow-hover);
         border-color: var(--border-color-strong);
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+    }
+    .post-card:hover::before {
+        opacity: 1;
+    }
+
+    /* 悬停时缩略图微微放大 */
+    .post-card:hover .post-thumbnail {
+        transform: scale(1.05);
     }
 
     /* 卡片左侧内容 (文字信息区域) */
     .card-content {
         flex-grow: 1;
+        position: relative;
+        z-index: 1;
     }
 
     /* 文章标题 */
@@ -457,11 +593,31 @@
         flex-shrink: 0;
         border: 1px solid var(--glass-border);
         margin-right: 18px;
+        transition: transform 0.35s;
+        position: relative;
+        z-index: 1;
     }
 
     @media (max-width: 600px) {
         .post-thumbnail {
             display: none;
+        }
+    }
+
+    /* 点击波纹 */
+    .post-card .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.18);
+        transform: scale(0);
+        animation: ripple-anim 0.7s ease-out forwards;
+        pointer-events: none;
+        z-index: 10;
+    }
+    @keyframes ripple-anim {
+        to {
+            transform: scale(4);
+            opacity: 0;
         }
     }
 
@@ -471,7 +627,7 @@
 
 <ul class="post-list">
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2026/06/09/%E7%A2%8E%E7%A2%8E%E5%BF%B52/" class="post-card">
             <img class="post-thumbnail" src="/images/%E7%A2%8E%E7%A2%8E%E5%BF%B52.webp" alt="碎碎念2" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -486,7 +642,7 @@
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2026/01/16/Ghost%20in%20the%20Snow/" class="post-card">
             <img class="post-thumbnail" src="/images/Ghost%20in%20the%20Snow.webp" alt="Ghost in the Snow" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -503,7 +659,7 @@
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2026/01/04/The%20Snow%20Goose/" class="post-card">
             <img class="post-thumbnail" src="/images/The%20Snow%20Goose.webp" alt="The Snow Goose" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -521,7 +677,7 @@
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/31/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C/" class="post-card">
             <img class="post-thumbnail" src="/images/%E7%9A%87%E5%90%8E%E5%A4%A7%E9%81%93%E4%B8%9C.webp" alt="皇后大道东" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -537,7 +693,7 @@
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/25/Pink%20Moon/" class="post-card">
             <img class="post-thumbnail" src="/images/Pink%20Moon.webp" alt="Pink Moon" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -554,7 +710,7 @@ Nick Drake由于过量用药去世，这是他生前的最后一张专辑，相�
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/24/I%20Believe%20in%20Father%20Christmas/" class="post-card">
             <img class="post-thumbnail" src="/images/I%20Believe%20in%20Father%20Christmas.webp" alt="I Believe in Father Christmas" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -570,7 +726,7 @@ Nick Drake由于过量用药去世，这是他生前的最后一张专辑，相�
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/24/%E9%BE%99%E7%9A%84%E4%BC%A0%E4%BA%BA%E7%BB%AD%E7%AF%87/" class="post-card">
             <img class="post-thumbnail" src="/images/%E9%BE%99%E7%9A%84%E4%BC%A0%E4%BA%BA%E7%BB%AD%E7%AF%87.webp" alt="龙的传人续篇" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -586,7 +742,7 @@ Nick Drake由于过量用药去世，这是他生前的最后一张专辑，相�
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/22/%E6%9C%AA%E6%9D%A5%E7%9A%84%E4%B8%BB%E4%BA%BA%E7%BF%81/" class="post-card">
             <img class="post-thumbnail" src="/images/%E6%9C%AA%E6%9D%A5%E7%9A%84%E4%B8%BB%E4%BA%BA%E7%BF%81.webp" alt="未来的主人翁" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -602,7 +758,7 @@ Nick Drake由于过量用药去世，这是他生前的最后一张专辑，相�
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/21/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97/" class="post-card">
             <img class="post-thumbnail" src="/images/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97.webp" alt="万能青年旅店" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -619,7 +775,7 @@ cjb国药最严厉的父亲
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/20/%E7%BA%A2%E6%97%97%E4%B8%8B%E7%9A%84%E8%9B%8B/" class="post-card">
             <img class="post-thumbnail" src="/images/%E7%BA%A2%E6%97%97%E4%B8%8B%E7%9A%84%E8%9B%8B.webp" alt="红旗下的蛋" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -636,7 +792,7 @@ cjb国药最严厉的父亲
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/15/%E7%A2%8E%E7%A2%8E%E5%BF%B51/" class="post-card">
             <img class="post-thumbnail" src="/images/%E7%A2%8E%E7%A2%8E%E5%BF%B51.webp" alt="碎碎念1" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -652,7 +808,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/13/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0/" class="post-card">
             <img class="post-thumbnail" src="/images/%E4%BA%8C%E6%89%8B%E7%8E%AB%E7%91%B0.webp" alt="二手玫瑰" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -669,7 +825,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/12/05/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F/" class="post-card">
             <img class="post-thumbnail" src="/images/%E6%82%B2%E5%89%A7%E7%9A%84%E8%AF%9E%E7%94%9F.webp" alt="悲剧的诞生" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -683,7 +839,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/11/30/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A/" class="post-card">
             <img class="post-thumbnail" src="/images/%E6%99%82%E4%BB%A3%E5%9C%A8%E5%8F%AC%E5%96%9A.webp" alt="時代在召喚" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -697,7 +853,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/11/26/Welcome%20to%20the%20Dying%20Season/" class="post-card">
             <img class="post-thumbnail" src="/images/Welcome%20to%20the%20Dying%20Season.webp" alt="Welcome to the Dying Season" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -711,7 +867,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/11/22/%E8%BF%B7%E8%B7%A1%E6%B3%A2/" class="post-card">
             <img class="post-thumbnail" src="/images/%E8%BF%B7%E8%B7%A1%E6%B3%A2.webp" alt="迷跡波" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -725,7 +881,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/11/18/In%20The%20Court%20Of%20The%20Crimson%20King/" class="post-card">
             <img class="post-thumbnail" src="/images/In%20The%20Court%20Of%20The%20Crimson%20King.webp" alt="In The Court Of The Crimson King" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -739,7 +895,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         </a>
       </li>
     
-      <li class="post-list-item">
+      <li class="post-list-item animate-in">
         <a href="/2025/11/15/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/" class="post-card">
             <img class="post-thumbnail" src="/images/%E6%84%9F%E6%83%85%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88.webp" alt="感情エフェクト" loading="lazy" onerror="this.style.display='none'">
             <div class="card-content">
@@ -778,16 +934,33 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         margin-bottom: 20px;
     }
 </style>
+
+<script>
+    // 页面加载完毕后隐藏骨架屏
+    (function() {
+        function hideSkeleton() {
+            setTimeout(function() {
+                var sk = document.getElementById('skeletonList');
+                if (sk) { sk.classList.add('hidden'); }
+            }, 200);
+        }
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            hideSkeleton();
+        } else {
+            window.addEventListener('DOMContentLoaded', hideSkeleton);
+        }
+    })();
+</script>
         </div>
         
         <aside class="sidebar">
-            <div class="card" style="text-align: center;">
+            <div class="card animate-in" style="text-align: center;">
                 <img src="/images/avatar.jpg" alt="这个图以后再来探索吧" class="profile-img">
                 <h3 class="profile-name">单行路OWR</h3>
                 <p class="profile-bio">HiFi佬 滚直<br>二次元(可能) 迪哥</p>
             </div>
 
-            <div class="card quote-card" 
+            <div class="card quote-card animate-in" 
                  id="quoteCard" 
                  onclick="changeQuote()"
                  data-quotes='[&#34;だって人生が長すぎる\u003cbr&gt;「ムズイよ」&#34;,&#34;死にたかった 死ななくてよかった&#34;,&#34;现实像个石头 精神像个蛋\u003cbr&gt;石头虽然坚硬 可蛋才是生命&#34;,&#34;大哥你玩摇滚你玩它有啥用呀&#34;,&#34;曲终人不见 江上数峰青&#34;,&#34;我们不要一个被科学游戏污染的天空\u003cbr&gt;我们不要一个被现实生活超越的时空&#34;,&#34;太上皇踏泰山 欲看尽帝皇路\u003cbr&gt;但是人造卫星 看得更真更早&#34;,&#34;この宇宙を構成する\u003cbr&gt;そのひとつを誇りたい&#34;,&#34;月を目指し旅立った日\u003cbr&gt;火星探査成功した日\u003cbr&gt;いつかオールトの曇も見つけ\u003cbr&gt;外を知るだろう\u003cbr&gt;それが暮らしさ&#34;,&#34;世界就在那儿欢乐也疼 是悲剧的诞生&#34;,&#34;The daybreak is your midnight\u003cbr&gt;The colours have all died&#34;,&#34;Why did He lose six million Jews?&#34;,&#34;野心勃勃的灯火\u003cbr&gt;瞬间吞没黑暗的脸庞&#34;,&#34;Death seed, blind man&#39;s greed\u003cbr&gt;Poets&#39; starving, children bleed\u003cbr&gt;Nothing he&#39;s got he really needs\u003cbr&gt;Twenty-first century schizoid man&#34;]'> 
@@ -815,9 +988,6 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
             // 亮色主题 CSS 变量值
             var LIGHT_VARS = {
                 '--primary-color': '#4a4a4a',
-                '--accent-1': '#c4b5e0',
-                '--accent-2': '#b5d0e0',
-                '--accent-3': '#e0d4c4',
                 '--text-color': '#2c2c2c',
                 '--text-color-light': '#777777',
                 '--background-color': '#f8f8f8',
@@ -828,8 +998,7 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
                 '--glass-shadow-hover': '0 4px 24px rgba(0, 0, 0, 0.10)',
                 '--border-color': '#e8e8e8',
                 '--border-color-strong': '#d4d4d4',
-                '--hover-bg': 'rgba(0, 0, 0, 0.03)',
-                '--blob-opacity': '0.45'
+                '--hover-bg': 'rgba(0, 0, 0, 0.03)'
             };
 
             function setTheme(theme) {
@@ -858,11 +1027,23 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
 
             // 初始化
             var saved = localStorage.getItem(STORAGE_KEY);
-            if (saved === 'light') {
-                // 先静默设置再触发初始过渡
-                setTheme('light');
+            if (saved) {
+                setTheme(saved);
+            } else {
+                // 无手动偏好时，跟随系统
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+                    setTheme('light');
+                }
             }
-            // 暗色默认无需操作（:root 已定义）
+            // 监听系统主题变化（仅在无手动覆盖时生效）
+            if (window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(e) {
+                    var savedNow = localStorage.getItem(STORAGE_KEY);
+                    if (!savedNow) {
+                        setTheme(e.matches ? 'light' : 'dark');
+                    }
+                });
+            }
 
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', function() {
@@ -875,51 +1056,286 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         })();
 
         // ----------------------------------------------------
-        // Pjax 初始化函数
+        // 流动色块 + 光标排斥效果
         // ----------------------------------------------------
+        (function() {
+            var blobs = [];
+            var cursorX = -1000, cursorY = -1000;
+            var winW, winH;
+
+            // 色块定义：每个色块的 "休息位置" (%)
+            var blobDefs = [
+                { el: document.querySelector('.bg-blob-1'), homeX: 0.12, homeY: 0.08, ampX: 0.10, ampY: 0.12, speed: 0.00025 },
+                { el: document.querySelector('.bg-blob-2'), homeX: 0.68, homeY: 0.15, ampX: 0.09, ampY: 0.14, speed: 0.00020 },
+                { el: document.querySelector('.bg-blob-3'), homeX: 0.20, homeY: 0.65, ampX: 0.12, ampY: 0.08, speed: 0.00022 },
+                { el: document.querySelector('.bg-blob-4'), homeX: 0.55, homeY: 0.58, ampX: 0.10, ampY: 0.11, speed: 0.00018 },
+                { el: document.querySelector('.bg-blob-5'), homeX: 0.42, homeY: 0.40, ampX: 0.08, ampY: 0.10, speed: 0.00023 }
+            ];
+
+            // 初始化色块
+            blobDefs.forEach(function(def) {
+                if (!def.el) return;
+                blobs.push({
+                    el: def.el,
+                    x: def.homeX * 100,
+                    y: def.homeY * 100,
+                    homeX: def.homeX,
+                    homeY: def.homeY,
+                    ampX: def.ampX,
+                    ampY: def.ampY,
+                    speed: def.speed,
+                    phase: Math.random() * Math.PI * 2
+                });
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                cursorX = e.clientX;
+                cursorY = e.clientY;
+            });
+            document.addEventListener('mouseleave', function() {
+                cursorX = -1000;
+                cursorY = -1000;
+            });
+
+            function resize() {
+                winW = window.innerWidth;
+                winH = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            var lastTime = 0;
+            function animate(time) {
+                if (!lastTime) lastTime = time;
+                lastTime = time;
+
+                blobs.forEach(function(blob) {
+                    // 慢速流动 — 正弦波漂移
+                    var targetX = blob.homeX * 100 + Math.sin(time * blob.speed * 0.001 + blob.phase) * blob.ampX * 100;
+                    var targetY = blob.homeY * 100 + Math.cos(time * blob.speed * 0.0014 + blob.phase) * blob.ampY * 100;
+
+                    // 当前位（像素）
+                    var px = blob.x / 100 * winW;
+                    var py = blob.y / 100 * winH;
+
+                    // 光标排斥力
+                    if (cursorX > 0 && cursorY > 0) {
+                        var dx = px - cursorX;
+                        var dy = py - cursorY;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        var maxDist = 600;
+                        if (dist < maxDist && dist > 0.1) {
+                            var force = (1 - dist / maxDist);
+                            force = force * force * 60; // 二次方，近距离力更大
+                            targetX += (dx / dist) * force / winW * 100;
+                            targetY += (dy / dist) * force / winH * 100;
+                        }
+                    }
+
+                    // 平滑插值
+                    blob.x += (targetX - blob.x) * 0.025;
+                    blob.y += (targetY - blob.y) * 0.025;
+
+                    // 钳制在 -20%~120% 以免跑到画面外
+                    blob.x = Math.max(-20, Math.min(120, blob.x));
+                    blob.y = Math.max(-20, Math.min(120, blob.y));
+
+                    // 应用到元素
+                    blob.el.style.transform = 'translate(' +
+                        ((blob.x - 50) + '%') + ', ' +
+                        ((blob.y - 50) + '%') + ')';
+                    blob.el.style.left = '50%';
+                    blob.el.style.top = '50%';
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            // 初始定位所有色块到中心
+            blobs.forEach(function(blob) {
+                blob.el.style.left = '50%';
+                blob.el.style.top = '50%';
+                blob.el.style.transform = 'translate(' +
+                    ((blob.homeX * 100 - 50) + '%') + ', ' +
+                    ((blob.homeY * 100 - 50) + '%') + ')';
+            });
+
+            requestAnimationFrame(animate);
+        })();
+
+        // ----------------------------------------------------
+        // Pjax 初始化函数（含过渡动画）
+        // ----------------------------------------------------
+        var pjaxInstance = null;
         function initPjax() {
             console.log("Pjax is initializing...");
-            var pjax = new Pjax({
-                // 监听所有非外部链接
+            if (pjaxInstance) { pjaxInstance = null; }
+            pjaxInstance = new Pjax({
                 elements: 'a:not([target="_blank"])', 
-                // 指定要替换的元素
                 selectors: [
                     'title',
-                    '#pjax-container' // 替换主要内容区域
+                    '#pjax-container'
                 ]
             });
         }
-        
+
+        // 页面切换前：淡出
+        document.addEventListener('pjax:send', function() {
+            var container = document.getElementById('pjax-container');
+            if (container) { container.classList.add('pjax-fading'); }
+        });
+
         // ----------------------------------------------------
         // Pjax 回调函数 (在内容切换完成后运行)
         // ----------------------------------------------------
         function afterPjaxLoad() {
             console.log("Pjax content loaded. Re-initializing scripts...");
             
+            // 移除淡出效果
+            var container = document.getElementById('pjax-container');
+            if (container) { container.classList.remove('pjax-fading'); }
+
+            // 重新初始化滚动动画观察器
+            initScrollAnimations();
+            
+            // 重新绑定灯箱事件
+            bindLightbox();
+
+            // 重新绑定波纹事件
+            bindRipple();
+
             // Live2D 模型硬重载逻辑
             if (typeof OML2D !== 'undefined' && typeof OML2D.initialize === 'function') {
-                const oldStage = document.querySelector('.oml2d-stage'); 
+                var oldStage = document.querySelector('.oml2d-stage'); 
                 if (oldStage) {
                     oldStage.remove(); 
                     console.log("Removed old Live2D stage.");
                 } else if (typeof OML2D.destroy === 'function') {
                     OML2D.destroy();
                 }
-                
                 OML2D.initialize();
                 console.log("Live2D re-initialized.");
             } 
-            
-            // 3. 重新运行其他脚本（例如代码高亮、数学公式渲染等）
-            // ...
         }
 
-        // 监听 Pjax 完成事件，在新页面加载后重新初始化脚本
+        // 监听 Pjax 完成事件
         document.addEventListener('pjax:complete', afterPjaxLoad);
         document.addEventListener('pjax:success', afterPjaxLoad);
 
-        // 首次加载和 Pjax 初始化 - 使用 window.onload 确保所有资源都已加载
-        window.onload = initPjax; 
+        // 首次加载
+        window.onload = function() {
+            initPjax();
+            initScrollAnimations();
+            bindLightbox();
+            bindRipple();
+        };
+
+        // ----------------------------------------------------
+        // 回到顶部按钮
+        // ----------------------------------------------------
+        var backToTopBtn = document.getElementById('backToTop');
+        function toggleBackToTop() {
+            if (!backToTopBtn) return;
+            if (window.scrollY > 400) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        }
+        window.addEventListener('scroll', toggleBackToTop, { passive: true });
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // ----------------------------------------------------
+        // 图片灯箱
+        // ----------------------------------------------------
+        var lightboxOverlay = document.getElementById('lightboxOverlay');
+        var lightboxImg = document.getElementById('lightboxImg');
+        var lightboxClose = document.getElementById('lightboxClose');
+
+        function openLightbox(src) {
+            if (!lightboxOverlay || !lightboxImg) return;
+            lightboxImg.src = src;
+            lightboxOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            if (!lightboxOverlay) return;
+            lightboxOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        if (lightboxOverlay) {
+            lightboxOverlay.addEventListener('click', function(e) {
+                if (e.target === lightboxOverlay || e.target === lightboxClose) {
+                    closeLightbox();
+                }
+            });
+        }
+        if (lightboxClose) {
+            lightboxClose.addEventListener('click', closeLightbox);
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeLightbox(); }
+        });
+
+        function bindLightbox() {
+            var articleImgs = document.querySelectorAll('.article-content img');
+            articleImgs.forEach(function(img) {
+                if (img.closest('.lightbox-overlay')) return;
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', function() {
+                    openLightbox(img.src);
+                });
+            });
+        }
+
+        // ----------------------------------------------------
+        // 滚动渐入动画 (IntersectionObserver)
+        // ----------------------------------------------------
+        var scrollObserver = null;
+        function initScrollAnimations() {
+            if (scrollObserver) { scrollObserver.disconnect(); }
+            var targets = document.querySelectorAll('.animate-in');
+            if (!targets.length) return;
+
+            scrollObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        scrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+            targets.forEach(function(el) {
+                scrollObserver.observe(el);
+            });
+        }
+
+        // ----------------------------------------------------
+        // 卡片点击波纹效果
+        // ----------------------------------------------------
+        function bindRipple() {
+            var cards = document.querySelectorAll('.post-card');
+            cards.forEach(function(card) {
+                card.addEventListener('click', function(e) {
+                    var ripple = document.createElement('span');
+                    ripple.className = 'ripple-effect';
+                    var rect = card.getBoundingClientRect();
+                    var size = Math.max(rect.width, rect.height);
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                    card.appendChild(ripple);
+                    ripple.addEventListener('animationend', function() {
+                        ripple.remove();
+                    });
+                });
+            });
+        }
 
         // ----------------------------------------------------
         // 您的引言切换脚本 (保持不变)
@@ -969,5 +1385,5 @@ blog第一个正式版(，本来还有很多乱七八糟的东西想加，但是
         }
     </script>
     
-<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-20,425],"scale":0.15}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
+<!-- hexo injector body_end start --><script data-pjax src="/pluginsSrc/oh-my-live2d/dist/index.min.js"></script><script>const oml2d = OML2D.loadOml2d({sayHello:false,dockedPosition:"right",mobileDisplay:true,models:[{"path":"/live2d/Neptune (SvS)/Neptune.model3.json","mobilePosition":[-10,23],"mobileScale":0.1,"mobileStageStyle":{"width":180,"height":166},"motionPreloadStrategy":"IDLE","position":[-60,90],"scale":0.15,"stageStyle":{"width":196,"height":350},"showHitAreaFrames":true}],parentElement:document.body,primaryColor:"var(--btn-bg)",tips:{welcomeTips: null,duration: 0,style: {"width":230,"height":120,"left":"calc(50% - 20px)","top":"-100px"},mobileStyle: {"width":180,"height":80,"left":"calc(50% - 30px)","top":"-100px"},idleTips:{interval:15000,message:null}},statusBar:{"disable":true}});</script><!-- hexo injector body_end end --></body>
 </html>
